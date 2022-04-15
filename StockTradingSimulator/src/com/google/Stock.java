@@ -1,8 +1,11 @@
 package com.google;
 
 import java.io.Serializable;
+//update class and add String name
+
 
 public class Stock implements Serializable {
+    private String name;
     private String ticker;
     private double currentPrice;
     private int volume;
@@ -11,11 +14,20 @@ public class Stock implements Serializable {
     public Stock() {
     }
 
-    public Stock(String ticker, double currentPrice, int volume, int available) {
+    public Stock(String name, String ticker, double currentPrice, int volume, int available) {
+        this.name = name;
         this.ticker = ticker;
         this.currentPrice = currentPrice;
         this.volume = volume;
         this.available = available;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getTicker() {
@@ -49,4 +61,6 @@ public class Stock implements Serializable {
     public void setAvailable(int available) {
         this.available = available;
     }
+
+
 }
