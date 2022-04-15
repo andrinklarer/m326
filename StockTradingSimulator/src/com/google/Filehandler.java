@@ -1,7 +1,6 @@
 package com.google;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 public class Filehandler {
     public static void writeFile(String filepath, Object input) {

@@ -16,10 +16,10 @@ public class StockOverviewDisplay extends JPanel {
     public StockOverviewDisplay(Display display) {
         this.display = display;
 
-        this.setBackground(new Color(0x60A3D9));
+        this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
         if (StockMarket.getStocks().size() > 0) {
             list = new JList<>(StockMarket.getStocks().stream().map(Stock::getTicker).toArray(String[]::new));
-            list.setBackground(new Color(0xBFD7ED));
+            list.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
             list.setFixedCellHeight(LIST_ELEMENT_HEIGHT);
             list.setFixedCellWidth(600); // change to responsive code
             list.setBorder(new EmptyBorder(0, 10, 5, 10));
@@ -28,6 +28,7 @@ public class StockOverviewDisplay extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() >= 2 && e.getButton() == MouseEvent.BUTTON1) {
+                        display.setScreenIdentifier(list.getSelectedValue());
                         display.updateCurrentScreen(2);
                     }
                 }
@@ -39,7 +40,7 @@ public class StockOverviewDisplay extends JPanel {
                                                               boolean isSelected, boolean cellHasFocus) {
                     JLabel cell = (JLabel) super.getListCellRendererComponent(list, value, index,
                             isSelected, cellHasFocus);
-                    cell.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+                    cell.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, DefaultValues.COLOR_TEXT_MAIN));
                     return cell;
                 }
             });

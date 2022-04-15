@@ -1,6 +1,8 @@
 package com.google;
 
-public class Stock {
+import java.io.Serializable;
+
+public class Stock implements Serializable {
     private String ticker;
     private double currentPrice;
     private int volume;

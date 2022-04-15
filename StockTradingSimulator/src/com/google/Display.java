@@ -6,21 +6,19 @@ import java.awt.*;
 public class Display extends JFrame {
     private Header header;
     private JPanel screen;
-    private BorderLayout screenLayout;
     private JPanel currentDisplay;
     private String screenIdentifier;
 
     public Display() {
-        screenLayout = new BorderLayout();
-        screen = new JPanel(screenLayout);
+        screen = new JPanel(new BorderLayout());
         header = new Header();
         currentDisplay = new Login(this);
         screenIdentifier = "";
 
         UserManager.loadUsers();
+        StockMarket.loadStocks();
 
         screen.add(currentDisplay, BorderLayout.CENTER);
-        screen.add(header, BorderLayout.NORTH);
 
         setDefaultValues();
     }
@@ -28,15 +26,15 @@ public class Display extends JFrame {
     /**
      * This method changes the current main screen to the new selected screen.
      * <p>
-     * 0 -> LoginPage
-     * 1 -> StockOverviewDisplay
-     * 2 -> StockDisplay
+     * 0 -> LoginPage,
+     * 1 -> StockOverviewDisplay,
+     * 2 -> StockDisplay,
      * 3 -> UserDisplay
      *
      * @param screenValue value new screen
      */
     public void updateCurrentScreen(int screenValue) {
-        screen.remove(screenLayout.getLayoutComponent(BorderLayout.CENTER));
+        screen.removeAll();
         switch (screenValue) {
             case 1 -> currentDisplay = new StockOverviewDisplay(this);
             case 2 -> currentDisplay = new StockDisplay(this, screenIdentifier);
@@ -44,6 +42,7 @@ public class Display extends JFrame {
             default -> currentDisplay = new Login(this);
         }
         screen.add(currentDisplay, BorderLayout.CENTER);
+        if(!currentDisplay.getClass().getName().contains("Login")) screen.add((header = new Header()), BorderLayout.NORTH);
         screen.revalidate();
     }
 

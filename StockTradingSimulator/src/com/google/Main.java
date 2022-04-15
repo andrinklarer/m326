@@ -6,6 +6,7 @@ public class Main {
         for (int i = 0; i < 10; i++) StockMarket.getStocks().add(new Stock("Google" + i, i * 10.0, i * 1000, i * 100));
         for (int i = 0; i < 10; i++) UserManager.getUsers().add(new User("andy" + i, "andy"+i, null));
         UserManager.save();
+        StockMarket.save();
 
         new Display();
     }

@@ -16,8 +16,8 @@ public class Login extends JPanel {
     private JTextField userNameField;
     private JButton loginButton;
 
-    private final String usernameFieldText = "Username\uFEFF";
-    private final String passwordFieldText = "Password\uFEFF";
+    private final String usernameFieldText = "\uFEFF Username";
+    private final String passwordFieldText = "\uFEFF Password";
 
     public Login(Display display) {
         this.display = display;
@@ -29,17 +29,18 @@ public class Login extends JPanel {
         errorMessage = new JLabel();
         errorMessage.setFocusable(false);
         errorMessage.setBorder(new EmptyBorder(0,0,0,0));
-        errorMessage.setForeground(Color.RED);
+        errorMessage.setForeground(DefaultValues.COLOR_TEXT_ERROR);
 
         userNameField = new JTextField(usernameFieldText);
-        userNameField.setForeground(Color.GRAY);
-        userNameField.setBorder(new EmptyBorder(0,0,0,0));
+        userNameField.setForeground(DefaultValues.COLOR_TEXT_PLACEHOLDER);
+        userNameField.setBorder(new EmptyBorder(0,10,0,0));
+        userNameField.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
         userNameField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 if (userNameField.getText().equals(usernameFieldText)) {
                     userNameField.setText("");
-                    userNameField.setForeground(Color.BLACK);
+                    userNameField.setForeground(DefaultValues.COLOR_TEXT_MAIN);
                 }
             }
 
@@ -47,22 +48,23 @@ public class Login extends JPanel {
             public void focusLost(FocusEvent e) {
                 if (userNameField.getText().isEmpty()) {
                     userNameField.setText(usernameFieldText);
-                    userNameField.setForeground(Color.GRAY);
+                    userNameField.setForeground(DefaultValues.COLOR_TEXT_PLACEHOLDER);
                 }
             }
         });
 
         passwordField = new JPasswordField(passwordFieldText);
-        passwordField.setForeground(Color.GRAY);
+        passwordField.setForeground(DefaultValues.COLOR_TEXT_PLACEHOLDER);
         passwordField.setEchoChar((char) 0);
-        passwordField.setBorder(new EmptyBorder(0,0,0,0));
+        passwordField.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
+        passwordField.setBorder(new EmptyBorder(0,10,0,0));
         passwordField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 if (String.valueOf(passwordField.getPassword()).equals(passwordFieldText)) {
-                    passwordField.setEchoChar('*');
+                    passwordField.setEchoChar(DefaultValues.CHAR_PASSWORD_ECHO_CHAR);
                     passwordField.setText("");
-                    passwordField.setForeground(Color.BLACK);
+                    passwordField.setForeground(DefaultValues.COLOR_TEXT_MAIN);
                 }
             }
 
@@ -71,13 +73,15 @@ public class Login extends JPanel {
                 if (String.valueOf(passwordField.getPassword()).isEmpty()) {
                     passwordField.setEchoChar((char) 0);
                     passwordField.setText(passwordFieldText);
-                    passwordField.setForeground(Color.GRAY);
+                    passwordField.setForeground(DefaultValues.COLOR_TEXT_PLACEHOLDER);
                 }
             }
         });
 
         loginButton = new JButton("Login");
         loginButton.setFocusable(false);
+        loginButton.setBorder(new EmptyBorder(0,0,0,0));
+        loginButton.setBackground(DefaultValues.COLOR_BACKGROUND_DARK);
         loginButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -116,7 +120,7 @@ public class Login extends JPanel {
         GridLayout layout = new GridLayout(4,1);
         layout.setVgap(5);
         this.setLayout(layout);
-        this.setBackground(new Color(0x60A3D9));
+        this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
         this.setBorder(new EmptyBorder(200, 200, 200, 200));
         addComponents();
     }

@@ -5,14 +5,13 @@ import java.util.List;
 
 public class UserManager {
     private static List<User> users = new ArrayList<>();
-    private static final String userFilePath = "users.txt";
 
     public static void loadUsers(){
-        users = (List<User>) Filehandler.readFile(userFilePath);
+        users = (List<User>) Filehandler.readFile(DefaultValues.USER_DATA_FILE_PATH);
     }
 
     public static void save() {
-        Filehandler.writeFile(userFilePath, users);
+        Filehandler.writeFile(DefaultValues.USER_DATA_FILE_PATH, users);
     }
 
     public static User getUserByUsername(String username) {
