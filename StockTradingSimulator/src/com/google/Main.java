@@ -20,7 +20,7 @@ public class Main {
 
 
 
-        for (int i = 0; i < 10; i++) StockMarket.getStocks().addAll(stocks);
+        StockMarket.getStocks().addAll(stocks);
         for (int i = 0; i < 10; i++) UserManager.getUsers().add(new User("andy" + i, "andy"+i, null));
         UserManager.save();
         StockMarket.save();

@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.function.Predicate;
 
 
 public class StockOverviewDisplay extends JPanel {
@@ -30,16 +31,20 @@ public class StockOverviewDisplay extends JPanel {
                     if (e.getClickCount() >= 2 && e.getButton() == MouseEvent.BUTTON1) {
                         display.setScreenIdentifier(list.getSelectedValue());
                         display.updateCurrentScreen(2);
+                        System.out.println(list.getSelectedValue());
+                        //retrieve Stock object from StockMarket
+                        final Stock[] currentStock = new Stock[1];
+                        StockMarket.getStocks().stream().findAny().filter(stock -> stock.getTicker().equals(list.getSelectedValue())).ifPresent(stock -> currentStock[0] = stock);
+
+                        DrawGraph.createAndShowGui((int) currentStock[0].getCurrentPrice());
                     }
                 }
             });
 
             list.setCellRenderer(new DefaultListCellRenderer() {
                 @Override
-                public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                              boolean isSelected, boolean cellHasFocus) {
-                    JLabel cell = (JLabel) super.getListCellRendererComponent(list, value, index,
-                            isSelected, cellHasFocus);
+                public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                    JLabel cell = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                     cell.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, DefaultValues.COLOR_TEXT_MAIN));
                     return cell;
                 }
