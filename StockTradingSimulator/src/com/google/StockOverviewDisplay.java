@@ -1,42 +1,52 @@
 package com.google;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 public class StockOverviewDisplay extends JPanel {
-
+    private int LIST_ELEMENT_HEIGHT = 30;
     private JList<String> list;
-    JLabel label = new JLabel();
+    private JLabel label = new JLabel();
+    private Display display;
 
-    public StockOverviewDisplay() {
-        this.setLayout(new FlowLayout());
-        this.setBackground(new Color(33, 222, 161));
+    public StockOverviewDisplay(Display display) {
+        this.display = display;
 
+        this.setBackground(new Color(0x60A3D9));
         if (StockMarket.getStocks().size() > 0) {
             list = new JList<>(StockMarket.getStocks().stream().map(Stock::getTicker).toArray(String[]::new));
+            list.setBackground(new Color(0xBFD7ED));
+            list.setFixedCellHeight(LIST_ELEMENT_HEIGHT);
+            list.setFixedCellWidth(600); // change to responsive code
+            list.setBorder(new EmptyBorder(0, 10, 5, 10));
+
+            list.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() >= 2 && e.getButton() == MouseEvent.BUTTON1) {
+                        display.updateCurrentScreen(2);
+                    }
+                }
+            });
+
+            list.setCellRenderer(new DefaultListCellRenderer() {
+                @Override
+                public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                                                              boolean isSelected, boolean cellHasFocus) {
+                    JLabel cell = (JLabel) super.getListCellRendererComponent(list, value, index,
+                            isSelected, cellHasFocus);
+                    cell.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+                    return cell;
+                }
+            });
+            this.add(list);
         } else {
-            list = new JList<>();
+            label.setText("No Stocks available");
         }
         this.add(label);
-        this.add(list);
-        list.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                String SelectedFruit = list.getSelectedValue();
-                label.setText(SelectedFruit);
-            }
-        });
     }
 }
-//        list = new JList<>();
-//        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-//        list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-//        for (int i = 0; i < 30; i++) {
-//            list.add(new JButton(i + ""));
-//        }
-//        this.setBackground(Color.GRAY);
-//        this.add(list);
-//        list.add(new JButton("Element"));

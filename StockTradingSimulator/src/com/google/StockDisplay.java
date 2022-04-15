@@ -1,6 +1,13 @@
 package com.google;
 
-public class StockDisplay {
-    private Stock stock;
+import javax.swing.*;
 
+public class StockDisplay extends JPanel {
+    private Stock stock;
+    private Display display;
+
+    public StockDisplay(Display display, String ticker) {
+        this.display = display;
+        stock = StockMarket.getStockByTicker(ticker);
+    }
 }

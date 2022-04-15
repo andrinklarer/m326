@@ -1,17 +1,23 @@
 package com.google;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String username;
-    private String password;
+    private Integer password;
     private Portfolio portfolio;
 
     public User() {
     }
 
-    public User(String username, String password, Portfolio portfolio) {
+    public User(String username, Integer password, Portfolio portfolio) {
         this.username = username;
         this.password = password;
         this.portfolio = portfolio;
+    }
+
+    public User(String username, String password, Portfolio portfolio) {
+        this(username, password.hashCode(), portfolio);
     }
 
     public String getUsername() {
@@ -22,11 +28,11 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
+    public Integer getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(Integer password) {
         this.password = password;
     }
 
@@ -36,5 +42,10 @@ public class User {
 
     public void setPortfolio(Portfolio portfolio) {
         this.portfolio = portfolio;
+    }
+
+    @Override
+    public String toString() {
+        return "User:: Username=" + this.username + " Password=" + this.password + " Portfolio=" + this.portfolio;
     }
 }

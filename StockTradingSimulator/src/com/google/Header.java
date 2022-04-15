@@ -25,6 +25,6 @@ public class Header extends JPanel {
         this.setLayout(new BorderLayout());
         this.add(refreshButton, BorderLayout.WEST);
         this.add(searchbar, BorderLayout.EAST);
-        this.setBackground(new Color(0x2B0BDE));
+        this.setBackground(new Color(0x0074B7));
     }
 }

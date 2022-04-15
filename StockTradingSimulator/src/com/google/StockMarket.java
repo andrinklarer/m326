@@ -6,6 +6,10 @@ import java.util.List;
 public class StockMarket {
     private static List<Stock> stocks = new ArrayList<>();
 
+    public static Stock getStockByTicker(String ticker) {
+        return stocks.stream().filter(stock -> stock.getTicker().equals(ticker)).findFirst().orElse(null);
+    }
+
     public static void update() {
 
     }
