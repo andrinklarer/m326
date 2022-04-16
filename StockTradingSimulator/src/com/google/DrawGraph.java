@@ -15,7 +15,7 @@ import java.util.List;
 import javax.swing.*;
 
 public class DrawGraph extends JPanel {
-    private static final int MAX_SCORE = 1000;
+    private static int MAX_SCORE = 1000;
     private static final int MIN_SCORE = 0;
     private static int MAX_Y = 1000;
     private static int MIN_Y = 0;
@@ -27,8 +27,8 @@ public class DrawGraph extends JPanel {
     private static final Color GRAPH_COLOR = Color.green;
     private static final Stroke GRAPH_STROKE = new BasicStroke(3f);
     private static final int GRAPH_POINT_WIDTH = 12;
-    private static final int timeout = 500;
-    private static final int MAX_DATA_POINTS = 20;
+    private static final int timeout = 1000;
+    private static final int MAX_X_DATA_POINTS = 20;
     private static final DecimalFormat df = new DecimalFormat("0.00");
     private static boolean isActive = false;
 
@@ -42,13 +42,8 @@ public class DrawGraph extends JPanel {
     }
 
     public static void createAndShowGui(int currentPrice) {
-        int maxDataPoints = 16;
 
-        allTimeChartScores.add(0.0);
-        allTimeChartScores.add((double) currentPrice);
-        for (int i = 0; i < maxDataPoints; i++) {
-            allTimeChartScores.add(100.0);
-        }
+        initialChart(currentPrice);
         DrawGraph mainPanel = new DrawGraph(allTimeChartScores);
 
         JFrame frame = new JFrame("DrawGraph");
@@ -59,11 +54,35 @@ public class DrawGraph extends JPanel {
         frame.setVisible(true);
     }
 
+    private static void initialChart(double currentPrice){
+        MAX_SCORE = (int) currentPrice;
+        MAX_Y = (int) currentPrice;
+        allTimeChartScores.add(0.0);
+        for (int i = 0; i < MAX_X_DATA_POINTS; i++) {
+            if (i == MAX_X_DATA_POINTS - 1) {
+                allTimeChartScores.add(currentPrice);
+            }
+            else {
+                int upperBound = (int) ((currentPrice/MAX_X_DATA_POINTS*i) + currentPrice/10);
+                int lowerBound = Math.max ((int) ((currentPrice/MAX_X_DATA_POINTS*i) - currentPrice/10),0);
+                allTimeChartScores.add(Math.random() * (upperBound - lowerBound) + lowerBound);
+            }
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        //lastScore
+        double lastScore =  allTimeChartScores.get(allTimeChartScores.size() - 1);
+
+        //add button to print the current price
+        JButton printButton = new JButton("Print");
+        printButton.addActionListener(ef -> System.out.println("\nbought at = " + allTimeChartScores.get(allTimeChartScores.size() - 3)));
+        add(printButton);
+
 
         //add button to show all time chart
         JButton button = new JButton("Show All Time Chart");
@@ -83,29 +102,32 @@ public class DrawGraph extends JPanel {
             int x1 = (int) (i * xScale + BORDER_GAP);
             int y1 = (int) ((MAX_Y - usedChartScores.get(i)) * yScale + BORDER_GAP);
             graphPoints.add(new Point(x1, y1));
+            if (i == usedChartScores.size()-1){
+                g2.drawString(df.format(usedChartScores.get(i)), x1, y1);
+            }
         }
         // create x and y axes
         g2.drawLine(BORDER_GAP, getHeight() - BORDER_GAP, BORDER_GAP, BORDER_GAP);
         g2.drawLine(BORDER_GAP, getHeight() - BORDER_GAP, getWidth() - BORDER_GAP, getHeight() - BORDER_GAP);
 
         // create hatch marks for y axis.
-        for (int i = 0; i < MAX_Y_DATA_POINTS; i++) {
+        for (int i = 0; i < MAX_Y_DATA_POINTS+1; i++) {
             int x0 = BORDER_GAP;
             int x1 = GRAPH_POINT_WIDTH + BORDER_GAP;
-            int y0 = (int) (getHeight() - (((i + 1) * (getHeight() - BORDER_GAP * 2)) / 20 + BORDER_GAP));
+            int y0 = (getHeight() - (((i) * (getHeight() - BORDER_GAP * 2)) / 20 + BORDER_GAP));
             int y1 = y0;
-            g2.drawString(String.valueOf(df.format(((double) (MAX_Y - MIN_Y) / MAX_Y_DATA_POINTS) * (i + 1) + MIN_Y)), x0 - 40, y0 + 3);
+            g2.drawString(String.valueOf(df.format(((double) (MAX_Y - MIN_Y) / MAX_Y_DATA_POINTS) * (i) + MIN_Y)), x0 - 40, y0 + 3);
             g2.drawLine(x0, y0, x1, y1);
         }
 
         // and for x axis
-        for (int i = 0; i < usedChartScores.size() - 1; i++) {
-            int x0 = (i + 1) * (getWidth() - BORDER_GAP * 2) / (usedChartScores.size() - 1) + BORDER_GAP;
+        for (int i = 0; i < Math.min(usedChartScores.size() - 1, 100); i++) {
+            int x0 = (i + 1) * (getWidth() - BORDER_GAP * 2) / Math.min(usedChartScores.size() - 1, 100) + BORDER_GAP;
             int x1 = x0;
             int y0 = getHeight() - BORDER_GAP;
             int y1 = y0 - GRAPH_POINT_WIDTH;
             g2.drawLine(x0, y0, x1, y1);
-            if (i == usedChartScores.size() - 2) {
+            if (i == Math.min(usedChartScores.size() - 2, 99)){
                 g2.drawString("now", x0 - 10, y0 + 15);
             }
         }
@@ -134,39 +156,36 @@ public class DrawGraph extends JPanel {
         return new Dimension(PREF_W, PREF_H);
     }
 
-    public double semiRandomNumber() {
+    public static double semiRandomNumber() {
         double lastScore = allTimeChartScores.get(allTimeChartScores.size() - 1);
         if (lastScore == MIN_SCORE) {
             return MIN_SCORE;
         }
         System.out.println("lastScore = " + lastScore);
-        if ((int) (Math.random() * 1000) == 100) {
+        //rare chance to crash
+        if ((int) (Math.random() * 2000) == 100) {
             return MIN_SCORE;
         }
-        int diff = 20;
+        double diff = lastScore / 100 * 10;;
         double lowerBound;
         double upperBound;
 
 
         if (lastScore <= MIN_SCORE + (MAX_SCORE / 20.0)) {
+            //chance to completely crash if prices are in bottom 5%
             int random = (int) (Math.random() * 10) / 2;
             if (random == 0) {
+                System.out.println("CRASHED cause low");
                 return MIN_SCORE;
             }
         }
 
-        if (lastScore <= MIN_SCORE) {
-            lastScore = AVG_SCORE;
-        } else if (lastScore >= MAX_SCORE) {
-            lastScore = AVG_SCORE;
-        }
-
         if (lastScore > AVG_SCORE) {
-            lowerBound = lastScore / AVG_SCORE * (AVG_SCORE - diff);
+            lowerBound = lastScore - diff;
             upperBound = lastScore + diff;
         } else if (lastScore < AVG_SCORE) {
-            lowerBound = lastScore / AVG_SCORE * (AVG_SCORE - diff);
-            upperBound = lastScore + diff;
+            lowerBound = lastScore - diff;
+            upperBound = lastScore + diff * 1.2;
         } else {
             lowerBound = lastScore - diff;
             upperBound = lastScore + diff;
@@ -206,7 +225,7 @@ public class DrawGraph extends JPanel {
             usedChartScores.add(i, allTimeChartScores.get(allTimeChartScores.size() - (Math.min(20, allTimeChartScores.size())) + i));
         }
 
-        if (usedChartScores.size() > MAX_DATA_POINTS) {
+        if (usedChartScores.size() > MAX_X_DATA_POINTS) {
             usedChartScores.remove(0);
         }
         updateList();
@@ -217,20 +236,21 @@ public class DrawGraph extends JPanel {
     private void updateList() {
         allTimeChartScores.add(Double.valueOf(df.format(semiRandomNumber())));
         usedChartScores.add(allTimeChartScores.get(allTimeChartScores.size() - 1));
+        StockMarket.getStockByTicker("AAPL").setCurrentPrice(usedChartScores.get(usedChartScores.size() - 1));
     }
 
     private void updateChartBounds() {
+        setMaxScore();
         int avg = getRecentAverage();
         double max = Collections.max(usedChartScores, null);
         double min = Collections.min(usedChartScores, null);
-        System.out.println("min = " + min);
-        System.out.println("max = " + max);
-        System.out.println("avg = " + avg);
         setMaxY((int) (Math.max((1.5 * avg), Math.max(max, 10))));
-        System.out.println("MAX_Y = " + MAX_Y);
-        ;
         setMinY((int) (Math.min((avg / 2.0), min)));
         setAvgScore(avg);
+    }
+
+    public void setMaxScore() {
+        MAX_SCORE = (int) (double) Collections.max(usedChartScores, null);
     }
 
 
