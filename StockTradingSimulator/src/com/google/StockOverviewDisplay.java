@@ -2,57 +2,95 @@ package com.google;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.function.Predicate;
-
 
 public class StockOverviewDisplay extends JPanel {
-    private int LIST_ELEMENT_HEIGHT = 30;
-    private JList<String> list;
-    private JLabel label = new JLabel();
+    private JLabel label;
     private Display display;
+    private JTable jtable;
 
     public StockOverviewDisplay(Display display) {
         this.display = display;
+        this.label = new JLabel();
 
-        this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
-        if (StockMarket.getStocks().size() > 0) {
-            list = new JList<>(StockMarket.getStocks().stream().map(Stock::getTicker).toArray(String[]::new));
-            list.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
-            list.setFixedCellHeight(LIST_ELEMENT_HEIGHT);
-            list.setFixedCellWidth(600); // change to responsive code
-            list.setBorder(new EmptyBorder(0, 10, 5, 10));
+        if (StockMarket.getStocks().size() > 0) setComponent();
+        else label.setText("No Stocks available");
 
-            list.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() >= 2 && e.getButton() == MouseEvent.BUTTON1) {
-                        display.setScreenIdentifier(list.getSelectedValue());
-                        display.updateCurrentScreen(2);
-                        System.out.println(list.getSelectedValue());
-                        //retrieve Stock object from StockMarket
-                        final Stock[] currentStock = new Stock[1];
-                        StockMarket.getStocks().stream().findAny().filter(stock -> stock.getTicker().equals(list.getSelectedValue())).ifPresent(stock -> currentStock[0] = stock);
-
-                        DrawGraph.createAndShowGui((int) currentStock[0].getCurrentPrice());
-                    }
-                }
-            });
-
-            list.setCellRenderer(new DefaultListCellRenderer() {
-                @Override
-                public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                    JLabel cell = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                    cell.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, DefaultValues.COLOR_TEXT_MAIN));
-                    return cell;
-                }
-            });
-            this.add(list);
-        } else {
-            label.setText("No Stocks available");
-        }
         this.add(label);
+        this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
+    }
+
+    private void setComponent() {
+        String[] columnNames = {"Name", "Current Price", "Available", "+/-%"};
+        String[][] data = StockMarket.getStocks().stream()
+                .map(stock -> new String[]{
+                        stock.getName(),
+                        stock.getPriceHistory().get(stock.getPriceHistory().size() - 1) + "",
+                        stock.getAvailable() + "",
+                        getPlusMinus(10, stock)
+                }).toArray(String[][]::new);
+
+        jtable = new JTable(data, columnNames);
+
+        jtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jtable.setShowVerticalLines(false);
+
+        jtable.setFont(DefaultValues.FONT_MAIN);
+        jtable.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
+
+        jtable.getTableHeader().setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
+        jtable.getTableHeader().setFont(DefaultValues.FONT_BOLD);
+        jtable.getTableHeader().setBorder(new EmptyBorder(0, 0, 0, 0));
+        jtable.getTableHeader().setReorderingAllowed(false);
+
+        jtable.setModel(new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
+
+        jtable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (((String) table.getValueAt(row, 3)).contains("+"))
+                    component.setForeground(DefaultValues.COLOR_TEXT_POSITIVE);
+                else if (((String) table.getValueAt(row, 3)).contains("-"))
+                    component.setForeground(DefaultValues.COLOR_TEXT_ERROR);
+                else component.setForeground(DefaultValues.COLOR_TEXT_MAIN);
+                return component;
+            }
+        });
+
+        jtable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    JTable target = (JTable) e.getSource();
+                    display.setScreenIdentifier(StockMarket.getStockByName((String) target.getValueAt(target.getSelectedRow(), 0)).getTicker() );
+                    display.updateCurrentScreen(2);
+                }
+            }
+        });
+
+        JScrollPane pane = new JScrollPane(jtable);
+        pane.getViewport().setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
+        pane.setBorder(new EmptyBorder(0, 0, 0, 0));
+
+        this.add(pane);
+    }
+
+    private String getPlusMinus(int lastPosition, Stock stock) {
+        double result = Math.round(
+                (stock.getPriceHistory().get(stock.getPriceHistory().size() - 1) /
+                        (stock.getPriceHistory().size() - 1 > lastPosition ?
+                                stock.getPriceHistory().get(stock.getPriceHistory().size() - 1 - lastPosition) : stock.getPriceHistory().get(0))
+                        - 1) * 100) / 100.0;
+        if (result > 0) return "+" + result;
+        else return result + "";
     }
 }

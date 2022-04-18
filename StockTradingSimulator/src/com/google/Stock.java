@@ -1,25 +1,35 @@
 package com.google;
 
 import java.io.Serializable;
-//update class and add String name
+import java.util.Arrays;
+import java.util.List;
+//changed currentPrice to price history to store all price changes for better statistics
 
 
 public class Stock implements Serializable {
     private String name;
     private String ticker;
-    private double currentPrice;
     private int volume;
     private int available;
+    private List<Double> priceHistory;
 
     public Stock() {
     }
 
-    public Stock(String name, String ticker, double currentPrice, int volume, int available) {
+    public Stock(String name, String ticker, int volume, int available, List<Double> priceHistory) {
         this.name = name;
         this.ticker = ticker;
-        this.currentPrice = currentPrice;
         this.volume = volume;
         this.available = available;
+        this.priceHistory = priceHistory;
+    }
+
+    public Stock(String name, String ticker, int volume, int available, Double... priceHistory) {
+        this.name = name;
+        this.ticker = ticker;
+        this.volume = volume;
+        this.available = available;
+        this.priceHistory = Arrays.stream(priceHistory).toList();
     }
 
     public String getName() {
@@ -38,12 +48,12 @@ public class Stock implements Serializable {
         this.ticker = ticker;
     }
 
-    public double getCurrentPrice() {
-        return currentPrice;
+    public List<Double> getPriceHistory() {
+        return priceHistory;
     }
 
-    public void setCurrentPrice(double currentPrice) {
-        this.currentPrice = currentPrice;
+    public void setPriceHistory(List<Double> priceHistory) {
+        this.priceHistory = priceHistory;
     }
 
     public int getVolume() {

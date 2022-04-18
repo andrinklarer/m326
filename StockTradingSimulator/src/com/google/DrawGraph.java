@@ -31,12 +31,14 @@ public class DrawGraph extends JPanel {
     private static final int MAX_X_DATA_POINTS = 20;
     private static final DecimalFormat df = new DecimalFormat("0.00");
     private static boolean isActive = false;
+    private Display display;
 
     private static List<Double> usedChartScores = new ArrayList<>();
     private static List<Double> allTimeChartScores = new ArrayList<>();
 
 
     public DrawGraph(List<Double> scores) {
+
         allTimeChartScores = scores;
         usedChartScores = new ArrayList<>(allTimeChartScores);
     }
@@ -236,7 +238,7 @@ public class DrawGraph extends JPanel {
     private void updateList() {
         allTimeChartScores.add(Double.valueOf(df.format(semiRandomNumber())));
         usedChartScores.add(allTimeChartScores.get(allTimeChartScores.size() - 1));
-        StockMarket.getStockByTicker("AAPL").setCurrentPrice(usedChartScores.get(usedChartScores.size() - 1));
+        StockMarket.getStockByTicker("AAPL").getPriceHistory().add(usedChartScores.get(usedChartScores.size() - 1));
     }
 
     private void updateChartBounds() {
@@ -252,7 +254,6 @@ public class DrawGraph extends JPanel {
     public void setMaxScore() {
         MAX_SCORE = (int) (double) Collections.max(usedChartScores, null);
     }
-
 
     private int getRecentAverage() {
         double sum = 0;

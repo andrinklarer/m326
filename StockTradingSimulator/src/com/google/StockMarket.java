@@ -18,6 +18,10 @@ public class StockMarket {
         return stocks.stream().filter(stock -> stock.getTicker().equals(ticker)).findFirst().orElse(null);
     }
 
+    public static Stock getStockByName(String name) {
+        return stocks.stream().filter(stock -> stock.getName().equals(name)).findFirst().orElse(null);
+    }
+
     public static void update() {
 
     }
