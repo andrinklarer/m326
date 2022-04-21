@@ -35,6 +35,7 @@ public class DrawGraph extends JPanel {
 
     private static List<Double> usedChartScores = new ArrayList<>();
     private static List<Double> allTimeChartScores = new ArrayList<>();
+    private static Stock stock;
 
 
     public DrawGraph(List<Double> scores) {
@@ -43,9 +44,9 @@ public class DrawGraph extends JPanel {
         usedChartScores = new ArrayList<>(allTimeChartScores);
     }
 
-    public static void createAndShowGui(int currentPrice) {
-
-        initialChart(currentPrice);
+    public static void createAndShowGui(Stock stock) {
+        DrawGraph.stock = stock;
+        initialChart(stock.getPriceHistory().get(stock.getPriceHistory().size() - 1));
         DrawGraph mainPanel = new DrawGraph(allTimeChartScores);
 
         JFrame frame = new JFrame("DrawGraph");
@@ -238,7 +239,8 @@ public class DrawGraph extends JPanel {
     private void updateList() {
         allTimeChartScores.add(Double.valueOf(df.format(semiRandomNumber())));
         usedChartScores.add(allTimeChartScores.get(allTimeChartScores.size() - 1));
-        StockMarket.getStockByTicker("AAPL").getPriceHistory().add(usedChartScores.get(usedChartScores.size() - 1));
+        StockMarket.getStockByTicker(stock.getTicker()).addPriceToHistory(allTimeChartScores.get(allTimeChartScores.size() - 1));
+       // StockMarket.getStockByTicker("AAPL").getPriceHistory().add(usedChartScores.get(usedChartScores.size() - 1));
     }
 
     private void updateChartBounds() {

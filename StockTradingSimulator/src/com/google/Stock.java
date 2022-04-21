@@ -1,6 +1,7 @@
 package com.google;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 //changed currentPrice to price history to store all price changes for better statistics
@@ -54,6 +55,16 @@ public class Stock implements Serializable {
 
     public void setPriceHistory(List<Double> priceHistory) {
         this.priceHistory = priceHistory;
+    }
+
+    public void addPriceToHistory(Double price) {
+        List<Double> newPriceHistory = new ArrayList<>();
+        //write all values of price history to a new list
+        for (int i = 0; i < priceHistory.size() - 1; i++) {
+            newPriceHistory.add(priceHistory.get(i));
+        }
+        newPriceHistory.add(price);
+        setPriceHistory(newPriceHistory);
     }
 
     public int getVolume() {

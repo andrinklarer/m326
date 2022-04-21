@@ -9,5 +9,6 @@ public class StockDisplay extends JPanel {
     public StockDisplay(Display display, String ticker) {
         this.display = display;
         stock = StockMarket.getStockByTicker(ticker);
+        DrawGraph.createAndShowGui(stock);
     }
 }
