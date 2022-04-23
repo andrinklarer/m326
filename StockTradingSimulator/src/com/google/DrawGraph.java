@@ -213,9 +213,7 @@ public class DrawGraph extends JPanel {
     private void updateAllTimeChart() {
         timeout();
         usedChartScores.clear();
-        for (int i = 0; i < allTimeChartScores.size() - 1; i++) {
-            usedChartScores.add(allTimeChartScores.get(i));
-        }
+        usedChartScores.addAll(allTimeChartScores);
         updateList();
         updateChartBounds();
         repaint();

@@ -58,11 +58,8 @@ public class Stock implements Serializable {
     }
 
     public void addPriceToHistory(Double price) {
-        List<Double> newPriceHistory = new ArrayList<>();
         //write all values of price history to a new list
-        for (int i = 0; i < priceHistory.size() - 1; i++) {
-            newPriceHistory.add(priceHistory.get(i));
-        }
+        List<Double> newPriceHistory = new ArrayList<>(priceHistory);
         newPriceHistory.add(price);
         setPriceHistory(newPriceHistory);
     }
