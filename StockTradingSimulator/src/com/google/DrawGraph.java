@@ -31,23 +31,22 @@ public class DrawGraph extends JPanel {
     private static final int MAX_X_DATA_POINTS = 20;
     private static final DecimalFormat df = new DecimalFormat("0.00");
     private static boolean isActive = false;
-    private Display display;
 
     private static List<Double> usedChartScores = new ArrayList<>();
     private static List<Double> allTimeChartScores = new ArrayList<>();
     private static Stock stock;
 
-
-    public DrawGraph(List<Double> scores) {
-
+    public DrawGraph(Stock stock, List<Double> scores) {
+        this.stock = stock;
         allTimeChartScores = scores;
         usedChartScores = new ArrayList<>(allTimeChartScores);
     }
 
-    public static void createAndShowGui(Stock stock) {
-        DrawGraph.stock = stock;
-        initialChart(stock.getPriceHistory().get(stock.getPriceHistory().size() - 1));
-        DrawGraph mainPanel = new DrawGraph(allTimeChartScores);
+    public static void createAndShowGui(Stock stock, int currentPrice) {
+
+        initialChart(currentPrice);
+        DrawGraph mainPanel = new DrawGraph(stock, allTimeChartScores);
+
 
         JFrame frame = new JFrame("DrawGraph");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,17 +56,16 @@ public class DrawGraph extends JPanel {
         frame.setVisible(true);
     }
 
-    private static void initialChart(double currentPrice){
+    private static void initialChart(double currentPrice) {
         MAX_SCORE = (int) currentPrice;
         MAX_Y = (int) currentPrice;
         allTimeChartScores.add(0.0);
         for (int i = 0; i < MAX_X_DATA_POINTS; i++) {
             if (i == MAX_X_DATA_POINTS - 1) {
                 allTimeChartScores.add(currentPrice);
-            }
-            else {
-                int upperBound = (int) ((currentPrice/MAX_X_DATA_POINTS*i) + currentPrice/10);
-                int lowerBound = Math.max ((int) ((currentPrice/MAX_X_DATA_POINTS*i) - currentPrice/10),0);
+            } else {
+                int upperBound = (int) ((currentPrice / MAX_X_DATA_POINTS * i) + currentPrice / 10);
+                int lowerBound = Math.max((int) ((currentPrice / MAX_X_DATA_POINTS * i) - currentPrice / 10), 0);
                 allTimeChartScores.add(Math.random() * (upperBound - lowerBound) + lowerBound);
             }
         }
@@ -79,7 +77,7 @@ public class DrawGraph extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         //lastScore
-        double lastScore =  allTimeChartScores.get(allTimeChartScores.size() - 1);
+        double lastScore = allTimeChartScores.get(allTimeChartScores.size() - 1);
 
         //add button to print the current price
         JButton printButton = new JButton("Print");
@@ -105,7 +103,7 @@ public class DrawGraph extends JPanel {
             int x1 = (int) (i * xScale + BORDER_GAP);
             int y1 = (int) ((MAX_Y - usedChartScores.get(i)) * yScale + BORDER_GAP);
             graphPoints.add(new Point(x1, y1));
-            if (i == usedChartScores.size()-1){
+            if (i == usedChartScores.size() - 1) {
                 g2.drawString(df.format(usedChartScores.get(i)), x1, y1);
             }
         }
@@ -114,7 +112,7 @@ public class DrawGraph extends JPanel {
         g2.drawLine(BORDER_GAP, getHeight() - BORDER_GAP, getWidth() - BORDER_GAP, getHeight() - BORDER_GAP);
 
         // create hatch marks for y axis.
-        for (int i = 0; i < MAX_Y_DATA_POINTS+1; i++) {
+        for (int i = 0; i < MAX_Y_DATA_POINTS + 1; i++) {
             int x0 = BORDER_GAP;
             int x1 = GRAPH_POINT_WIDTH + BORDER_GAP;
             int y0 = (getHeight() - (((i) * (getHeight() - BORDER_GAP * 2)) / 20 + BORDER_GAP));
@@ -130,7 +128,7 @@ public class DrawGraph extends JPanel {
             int y0 = getHeight() - BORDER_GAP;
             int y1 = y0 - GRAPH_POINT_WIDTH;
             g2.drawLine(x0, y0, x1, y1);
-            if (i == Math.min(usedChartScores.size() - 2, 99)){
+            if (i == Math.min(usedChartScores.size() - 2, 99)) {
                 g2.drawString("now", x0 - 10, y0 + 15);
             }
         }
@@ -151,7 +149,7 @@ public class DrawGraph extends JPanel {
         } else {
             updateChart();
         }
-
+        this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
     }
 
     @Override
@@ -169,7 +167,8 @@ public class DrawGraph extends JPanel {
         if ((int) (Math.random() * 2000) == 100) {
             return MIN_SCORE;
         }
-        double diff = lastScore / 100 * 10;;
+        double diff = lastScore / 100 * 10;
+        ;
         double lowerBound;
         double upperBound;
 

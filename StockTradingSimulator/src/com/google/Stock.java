@@ -30,7 +30,7 @@ public class Stock implements Serializable {
         this.ticker = ticker;
         this.volume = volume;
         this.available = available;
-        this.priceHistory = Arrays.stream(priceHistory).toList();
+        this.priceHistory = new ArrayList<>(Arrays.stream(priceHistory).toList());
     }
 
     public String getName() {

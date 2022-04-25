@@ -19,5 +19,5 @@ public class DefaultValues {
 
     public static final Font FONT_MAIN = new Font("Dialog", Font.PLAIN,12);
     public static final Font FONT_BOLD =new Font("Dialog", Font.BOLD,12);
-    public static final Font FONT_TITLE = new Font("Dialog", Font.BOLD,18);
+    public static final Font FONT_TITLE = new Font("Dialog", Font.BOLD,36);
 }
