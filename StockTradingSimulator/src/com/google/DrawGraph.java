@@ -12,6 +12,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.*;
 
 public class DrawGraph extends JPanel {
@@ -23,50 +25,44 @@ public class DrawGraph extends JPanel {
     private static final int MAX_Y_DATA_POINTS = 20;
     private static final int PREF_W = 800;
     private static final int PREF_H = 650;
-    private static final int BORDER_GAP = 50;
+    private static final int BORDER_GAP = 60;
+    private static final int Y_BORDER_GAP = 30;
     private static final Color GRAPH_COLOR = Color.green;
     private static final Stroke GRAPH_STROKE = new BasicStroke(3f);
     private static final int GRAPH_POINT_WIDTH = 12;
     private static final int timeout = 1000;
     private static final int MAX_X_DATA_POINTS = 20;
     private static final DecimalFormat df = new DecimalFormat("0.00");
-    private static boolean isActive = false;
+    public static boolean isActive = false;
 
     private static List<Double> usedChartScores = new ArrayList<>();
     private static List<Double> allTimeChartScores = new ArrayList<>();
     private static Stock stock;
+    private StockDisplay stockDisplay;
 
-    public DrawGraph(Stock stock, List<Double> scores) {
-        this.stock = stock;
-        allTimeChartScores = scores;
+    public DrawGraph(Stock stock, StockDisplay stockDisplay) {
+        this.stockDisplay = stockDisplay;
+        initialChart(stock);
+        DrawGraph.stock = stock;
+        allTimeChartScores = stock.getPriceHistory();
         usedChartScores = new ArrayList<>(allTimeChartScores);
     }
 
-    public static void createAndShowGui(Stock stock, int currentPrice) {
-
-        initialChart(currentPrice);
-        DrawGraph mainPanel = new DrawGraph(stock, allTimeChartScores);
-
-
-        JFrame frame = new JFrame("DrawGraph");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(mainPanel);
-        frame.pack();
-        frame.setLocationByPlatform(true);
-        frame.setVisible(true);
-    }
-
-    private static void initialChart(double currentPrice) {
-        MAX_SCORE = (int) currentPrice;
-        MAX_Y = (int) currentPrice;
-        allTimeChartScores.add(0.0);
+    private static void initialChart(Stock stock) {
+        if (stock.getPriceHistory().get(0) == 0) {
+            return;
+        }
+        double lowestPrice = stock.getPriceHistory().get(0);
+        MAX_SCORE = (int) lowestPrice;
+        MAX_Y = (int) lowestPrice;
+        stock.setPriceHistory(List.of(0.0));
         for (int i = 0; i < MAX_X_DATA_POINTS; i++) {
             if (i == MAX_X_DATA_POINTS - 1) {
-                allTimeChartScores.add(currentPrice);
+                stock.addPriceToHistory(lowestPrice);
             } else {
-                int upperBound = (int) ((currentPrice / MAX_X_DATA_POINTS * i) + currentPrice / 10);
-                int lowerBound = Math.max((int) ((currentPrice / MAX_X_DATA_POINTS * i) - currentPrice / 10), 0);
-                allTimeChartScores.add(Math.random() * (upperBound - lowerBound) + lowerBound);
+                int upperBound = (int) ((lowestPrice / MAX_X_DATA_POINTS * i) + lowestPrice / 10);
+                int lowerBound = Math.max((int) ((lowestPrice / MAX_X_DATA_POINTS * i) - lowestPrice / 10), 0);
+                stock.addPriceToHistory(Math.random() * (upperBound - lowerBound) + lowerBound);
             }
         }
     }
@@ -76,46 +72,29 @@ public class DrawGraph extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        //lastScore
-        double lastScore = allTimeChartScores.get(allTimeChartScores.size() - 1);
-
-        //add button to print the current price
-        JButton printButton = new JButton("Print");
-        printButton.addActionListener(ef -> System.out.println("\nbought at = " + allTimeChartScores.get(allTimeChartScores.size() - 3)));
-        add(printButton);
-
-
-        //add button to show all time chart
-        JButton button = new JButton("Show All Time Chart");
-        button.addActionListener(e -> DrawGraph.isActive = true);
-        add(button);
-
-        //add button to show current chart
-        JButton button2 = new JButton("Show Current Chart");
-        button2.addActionListener(e -> DrawGraph.isActive = false);
-        add(button2);
+        this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
 
         double xScale = ((double) getWidth() - 2 * BORDER_GAP) / (usedChartScores.size() - 1);
-        double yScale = ((double) getHeight() - 2 * BORDER_GAP) / (MAX_Y - MIN_Y);
+        double yScale = ((double) getHeight() - 2 * Y_BORDER_GAP) / (MAX_Y - MIN_Y);
 
         List<Point> graphPoints = new ArrayList<Point>();
         for (int i = 0; i < usedChartScores.size(); i++) {
             int x1 = (int) (i * xScale + BORDER_GAP);
-            int y1 = (int) ((MAX_Y - usedChartScores.get(i)) * yScale + BORDER_GAP);
+            int y1 = (int) ((MAX_Y - usedChartScores.get(i)) * yScale + Y_BORDER_GAP);
             graphPoints.add(new Point(x1, y1));
             if (i == usedChartScores.size() - 1) {
                 g2.drawString(df.format(usedChartScores.get(i)), x1, y1);
             }
         }
         // create x and y axes
-        g2.drawLine(BORDER_GAP, getHeight() - BORDER_GAP, BORDER_GAP, BORDER_GAP);
-        g2.drawLine(BORDER_GAP, getHeight() - BORDER_GAP, getWidth() - BORDER_GAP, getHeight() - BORDER_GAP);
+        g2.drawLine(BORDER_GAP, getHeight() - Y_BORDER_GAP, BORDER_GAP, Y_BORDER_GAP);
+        g2.drawLine(BORDER_GAP, getHeight() - Y_BORDER_GAP, getWidth() - BORDER_GAP, getHeight() - Y_BORDER_GAP);
 
         // create hatch marks for y axis.
         for (int i = 0; i < MAX_Y_DATA_POINTS + 1; i++) {
             int x0 = BORDER_GAP;
             int x1 = GRAPH_POINT_WIDTH + BORDER_GAP;
-            int y0 = (getHeight() - (((i) * (getHeight() - BORDER_GAP * 2)) / 20 + BORDER_GAP));
+            int y0 = (getHeight() - (((i) * (getHeight() - Y_BORDER_GAP * 2)) / 20 + Y_BORDER_GAP));
             int y1 = y0;
             g2.drawString(String.valueOf(df.format(((double) (MAX_Y - MIN_Y) / MAX_Y_DATA_POINTS) * (i) + MIN_Y)), x0 - 40, y0 + 3);
             g2.drawLine(x0, y0, x1, y1);
@@ -125,7 +104,7 @@ public class DrawGraph extends JPanel {
         for (int i = 0; i < Math.min(usedChartScores.size() - 1, 100); i++) {
             int x0 = (i + 1) * (getWidth() - BORDER_GAP * 2) / Math.min(usedChartScores.size() - 1, 100) + BORDER_GAP;
             int x1 = x0;
-            int y0 = getHeight() - BORDER_GAP;
+            int y0 = getHeight() - Y_BORDER_GAP;
             int y1 = y0 - GRAPH_POINT_WIDTH;
             g2.drawLine(x0, y0, x1, y1);
             if (i == Math.min(usedChartScores.size() - 2, 99)) {
@@ -142,14 +121,14 @@ public class DrawGraph extends JPanel {
             int y2 = graphPoints.get(i + 1).y;
             g2.drawLine(x1, y1, x2, y2);
         }
+        stockDisplay.reloadStats();
         if (checkCrash()) {
             g2.setColor(Color.red);
             g2.drawString("CRASHED", getWidth() / 2 - 50, getHeight() / 2);
-            ;
         } else {
             updateChart();
         }
-        this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
+
     }
 
     @Override
@@ -237,7 +216,6 @@ public class DrawGraph extends JPanel {
         allTimeChartScores.add(Double.valueOf(df.format(semiRandomNumber())));
         usedChartScores.add(allTimeChartScores.get(allTimeChartScores.size() - 1));
         StockMarket.getStockByTicker(stock.getTicker()).addPriceToHistory(allTimeChartScores.get(allTimeChartScores.size() - 1));
-       // StockMarket.getStockByTicker("AAPL").getPriceHistory().add(usedChartScores.get(usedChartScores.size() - 1));
     }
 
     private void updateChartBounds() {

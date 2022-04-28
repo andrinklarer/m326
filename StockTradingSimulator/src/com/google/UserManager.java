@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserManager {
+    public static User currentUser = new User("admin", "admin", new Portfolio(100000, new ArrayList<>()));
     private static List<User> users = new ArrayList<>();
 
     public static void loadUsers(){

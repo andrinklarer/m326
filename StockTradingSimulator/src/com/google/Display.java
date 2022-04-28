@@ -4,15 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Display extends JFrame {
-    private Header header;
+    public static Header header;
     private JPanel screen;
     private JPanel currentDisplay;
     private String screenIdentifier;
 
     public Display() {
         screen = new JPanel(new BorderLayout());
-        header = new Header();
         currentDisplay = new Login(this);
+        header = new Header("");
         screenIdentifier = "";
 
         UserManager.loadUsers();
@@ -42,7 +42,7 @@ public class Display extends JFrame {
             default -> currentDisplay = new Login(this);
         }
         screen.add(currentDisplay, BorderLayout.CENTER);
-        if(!currentDisplay.getClass().getName().contains("Login")) screen.add((header = new Header()), BorderLayout.NORTH);
+        if(!currentDisplay.getClass().getName().contains("Login")) screen.add((header = new Header(StockMarket.getStockByTicker(screenIdentifier).getName())), BorderLayout.NORTH);
         screen.revalidate();
     }
 
@@ -55,7 +55,7 @@ public class Display extends JFrame {
         this.pack();
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-        this.setSize(1000, 600);
+        this.setSize(1000, 700);
     }
 
     public String getScreenIdentifier() {

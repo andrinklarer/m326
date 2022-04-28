@@ -64,6 +64,10 @@ public class Stock implements Serializable {
         setPriceHistory(newPriceHistory);
     }
 
+    public double getCurrentPrice() {
+        return priceHistory.get(priceHistory.size() - 1);
+    }
+
     public int getVolume() {
         return volume;
     }

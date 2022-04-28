@@ -1,6 +1,8 @@
 package com.google;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class User implements Serializable {
     private String username;
@@ -42,6 +44,17 @@ public class User implements Serializable {
 
     public void setPortfolio(Portfolio portfolio) {
         this.portfolio = portfolio;
+    }
+
+    public void buy(Stock stock, int currentPrice, int quantity) {
+        portfolio.setBalance(portfolio.getBalance() - (currentPrice * quantity));
+        portfolio.addShares(new Share(stock, currentPrice, LocalDateTime.now(),quantity));
+
+    }
+    public void sell(Stock stock, int currentPrice, int quantity) {
+        portfolio.setBalance(portfolio.getBalance() + (currentPrice * quantity));
+        portfolio.removeShare(new Share(stock, currentPrice, LocalDateTime.now(),quantity));
+
     }
 
     @Override

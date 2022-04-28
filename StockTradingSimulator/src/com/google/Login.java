@@ -104,6 +104,7 @@ public class Login extends JPanel {
             if(user == null || user.getPassword() != password.hashCode()){
                 errorMessage.setText("Wrong username or password");
             }else{
+                UserManager.currentUser = user;
                 display.updateCurrentScreen(1);
             }
         }
