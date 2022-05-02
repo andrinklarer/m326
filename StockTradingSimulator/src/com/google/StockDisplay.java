@@ -37,7 +37,7 @@ public class StockDisplay extends JPanel {
 
     private void initButtons(){
         //add button to show all time chart
-        JButton button = new JButton(DrawGraph.isActive ? "lol" : "Show All Time Chart");
+        JButton button = new JButton("Show All Time Chart");
         button.addActionListener(e -> DrawGraph.isActive = true);
         button.setAlignmentX(Component.RIGHT_ALIGNMENT);
         button.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -113,7 +113,7 @@ public class StockDisplay extends JPanel {
 
     }
     private void buy(int amount){
-        if(StockMarket.getStockByTicker(stock.getTicker()).getAvailable() >= amount){
+        if(StockMarket.getStockByTicker(stock.getTicker()).getAvailable() >= amount && UserManager.currentUser.getPortfolio().getBalance() >= amount * stock.getCurrentPrice()){
             System.out.println("Bought " + amount + " shares of " + stock.getTicker());
             UserManager.currentUser.buy(stock, (int) stock.getCurrentPrice(), amount);
             StockMarket.getStockByTicker(stock.getTicker()).setAvailable(stock.getAvailable() - amount);

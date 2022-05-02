@@ -39,16 +39,19 @@ public class Portfolio {
         int toRemove = soldShare.getAmount();
         while (toRemove > 0) {
             for (Iterator<Share> shareIterator = shares.iterator(); shareIterator.hasNext();) {
-                Share share = shareIterator.next();
-                if (share.getStock().getTicker().equals(soldShare.getStock().getTicker())) {
-                    if (share.getAmount() > 0) {
-                        share.setAmount(share.getAmount() - 1);
-                        toRemove--;
-                    }
-                    if (share.getAmount() == 0) {
-                        shareIterator.remove();
+                if (toRemove > 0) {
+                    Share share = shareIterator.next();
+                    if (share.getStock().getTicker().equals(soldShare.getStock().getTicker())) {
+                        if (share.getAmount() > 0) {
+                            share.setAmount(share.getAmount() - 1);
+                            toRemove--;
+                        }
+                        if (share.getAmount() == 0) {
+                            shareIterator.remove();
+                        }
                     }
                 }
+                else return;
             }
         }
     }

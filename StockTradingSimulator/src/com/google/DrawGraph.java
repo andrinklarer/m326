@@ -30,7 +30,7 @@ public class DrawGraph extends JPanel {
     private static final Color GRAPH_COLOR = Color.green;
     private static final Stroke GRAPH_STROKE = new BasicStroke(3f);
     private static final int GRAPH_POINT_WIDTH = 12;
-    private static final int timeout = 1000;
+    private static final int timeout = 100;
     private static final int MAX_X_DATA_POINTS = 20;
     private static final DecimalFormat df = new DecimalFormat("0.00");
     public static boolean isActive = false;
@@ -96,7 +96,8 @@ public class DrawGraph extends JPanel {
             int x1 = GRAPH_POINT_WIDTH + BORDER_GAP;
             int y0 = (getHeight() - (((i) * (getHeight() - Y_BORDER_GAP * 2)) / 20 + Y_BORDER_GAP));
             int y1 = y0;
-            g2.drawString(String.valueOf(df.format(((double) (MAX_Y - MIN_Y) / MAX_Y_DATA_POINTS) * (i) + MIN_Y)), x0 - 40, y0 + 3);
+            String hatchData = String.valueOf(df.format(((double) (MAX_Y - MIN_Y) / MAX_Y_DATA_POINTS) * (i) + MIN_Y));
+            g2.drawString(hatchData, x0 - hatchData.length() * 7, y0 + 3);
             g2.drawLine(x0, y0, x1, y1);
         }
 

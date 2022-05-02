@@ -2,6 +2,7 @@ package com.google;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Optional;
 
 public class Display extends JFrame {
     public static Header header;
@@ -11,8 +12,8 @@ public class Display extends JFrame {
 
     public Display() {
         screen = new JPanel(new BorderLayout());
-        currentDisplay = new Login(this);
-        header = new Header("");
+        header = new Header(this, "StockOverview", DisplayType.OVERVIEW);
+        currentDisplay = new StockOverviewDisplay(this);
         screenIdentifier = "";
 
         UserManager.loadUsers();
@@ -38,11 +39,13 @@ public class Display extends JFrame {
         switch (screenValue) {
             case 1 -> currentDisplay = new StockOverviewDisplay(this);
             case 2 -> currentDisplay = new StockDisplay(this, screenIdentifier);
-            case 3 -> currentDisplay = new UserDisplay(this, screenIdentifier);
+            case 3 -> currentDisplay = new UserDisplay(this);
             default -> currentDisplay = new Login(this);
         }
         screen.add(currentDisplay, BorderLayout.CENTER);
-        if(!currentDisplay.getClass().getName().contains("Login")) screen.add((header = new Header(StockMarket.getStockByTicker(screenIdentifier).getName())), BorderLayout.NORTH);
+        if(!currentDisplay.getClass().getName().contains("Login")) screen.add(header = new Header(this, StockMarket.getStockByTicker(screenIdentifier).getName(), DisplayType.CHART), BorderLayout.NORTH);
+        if(currentDisplay.getClass().equals(StockOverviewDisplay.class)) screen.add((header = new Header(this, "StockOverview", DisplayType.OVERVIEW)), BorderLayout.NORTH);
+        if(currentDisplay.getClass().equals(UserDisplay.class)) screen.add((header = new Header(this, UserManager.currentUser.getUsername(), DisplayType.PORTFOLIO)), BorderLayout.NORTH);
         screen.revalidate();
     }
 
