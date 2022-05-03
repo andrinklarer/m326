@@ -3,6 +3,7 @@ package com.google;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class User implements Serializable {
     private String username;
@@ -52,10 +53,15 @@ public class User implements Serializable {
 
     }
     public void sell(Stock stock, int currentPrice, int quantity) {
+        Share shareToSell = new Share(stock, currentPrice, LocalDateTime.now(), quantity);
         portfolio.setBalance(portfolio.getBalance() + (currentPrice * quantity));
-        portfolio.removeShare(new Share(stock, currentPrice, LocalDateTime.now(),quantity));
-
+        portfolio.removeShare(shareToSell);
+        updateSellHistory(shareToSell);
     }
+    private void updateSellHistory(Share share) {
+        portfolio.getSellHistory().add(share);
+    }
+
 
     @Override
     public String toString() {

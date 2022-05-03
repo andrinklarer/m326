@@ -1,8 +1,10 @@
 package com.google;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Share {
+public class Share implements Serializable
+{
     private Stock stock;
     private double buyPrice;
     private LocalDateTime timeStamp;

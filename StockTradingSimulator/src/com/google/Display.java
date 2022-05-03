@@ -2,6 +2,8 @@ package com.google;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Optional;
 
 public class Display extends JFrame {
@@ -11,17 +13,28 @@ public class Display extends JFrame {
     private String screenIdentifier;
 
     public Display() {
-        screen = new JPanel(new BorderLayout());
-        header = new Header(this, "StockOverview", DisplayType.OVERVIEW);
-        currentDisplay = new StockOverviewDisplay(this);
-        screenIdentifier = "";
-
         UserManager.loadUsers();
         StockMarket.loadStocks();
+        screen = new JPanel(new BorderLayout());
+        header = new Header(this, "StockOverview", DisplayType.OVERVIEW);
+        currentDisplay = new Login(this);
+        screenIdentifier = "";
+
+
 
         screen.add(currentDisplay, BorderLayout.CENTER);
 
         setDefaultValues();
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                UserManager.save();
+                StockMarket.save();
+
+                super.windowClosing(e);
+            }
+        });
+
     }
 
     /**
@@ -43,7 +56,7 @@ public class Display extends JFrame {
             default -> currentDisplay = new Login(this);
         }
         screen.add(currentDisplay, BorderLayout.CENTER);
-        if(!currentDisplay.getClass().getName().contains("Login")) screen.add(header = new Header(this, StockMarket.getStockByTicker(screenIdentifier).getName(), DisplayType.CHART), BorderLayout.NORTH);
+        if(currentDisplay.getClass().equals(StockDisplay.class)) screen.add(header = new Header(this, StockMarket.getStockByTicker(screenIdentifier).getName(), DisplayType.CHART), BorderLayout.NORTH);
         if(currentDisplay.getClass().equals(StockOverviewDisplay.class)) screen.add((header = new Header(this, "StockOverview", DisplayType.OVERVIEW)), BorderLayout.NORTH);
         if(currentDisplay.getClass().equals(UserDisplay.class)) screen.add((header = new Header(this, UserManager.currentUser.getUsername(), DisplayType.PORTFOLIO)), BorderLayout.NORTH);
         screen.revalidate();
@@ -64,6 +77,7 @@ public class Display extends JFrame {
     public String getScreenIdentifier() {
         return screenIdentifier;
     }
+
 
     public void setScreenIdentifier(String screenIdentifier) {
         this.screenIdentifier = screenIdentifier;

@@ -19,7 +19,7 @@ public class Main {
         stocks.add(new Stock("Yahoo", "YHOO", 1000000, 10000, 1000.0));
 
         StockMarket.getStocks().addAll(stocks);
-        for (int i = 0; i < 10; i++) UserManager.getUsers().add(new User("andy" + i, "andy" + i, null));
+        for (int i = 0; i < 10; i++) UserManager.getUsers().add(new User("andy" + i, "andy" + i, new Portfolio(10000 * i, new ArrayList<>())));
         UserManager.save();
         StockMarket.save();
 

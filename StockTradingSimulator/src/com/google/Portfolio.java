@@ -1,21 +1,25 @@
 package com.google;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Portfolio {
+public class Portfolio implements Serializable {
     private double balance;
     private List<Share> shares;
+    private List<Share> sellHistory;
 
     public Portfolio() {
         shares = new ArrayList<>();
+        sellHistory = new ArrayList<>();
         balance = 0;
     }
 
     public Portfolio(double balance, List<Share> shares) {
         this.balance = balance;
         this.shares = shares;
+        this.sellHistory = new ArrayList<>();
     }
 
     public double getBalance() {
@@ -65,6 +69,14 @@ public class Portfolio {
         }
         System.out.println("Number of shares of type : " + count);
         return count;
+    }
+
+    public List<Share> getSellHistory() {
+        return sellHistory;
+    }
+
+    public void setSellHistory(List<Share> sellHistory) {
+        this.sellHistory = sellHistory;
     }
 
     public void addShares(Share share) {

@@ -30,7 +30,7 @@ public class DrawGraph extends JPanel {
     private static final Color GRAPH_COLOR = Color.green;
     private static final Stroke GRAPH_STROKE = new BasicStroke(3f);
     private static final int GRAPH_POINT_WIDTH = 12;
-    private static final int timeout = 100;
+    private static final int timeout = 1000;
     private static final int MAX_X_DATA_POINTS = 20;
     private static final DecimalFormat df = new DecimalFormat("0.00");
     public static boolean isActive = false;
