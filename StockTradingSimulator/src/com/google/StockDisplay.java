@@ -2,8 +2,9 @@ package com.google;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
-public class StockDisplay extends JPanel {
+public class StockDisplay extends JPanel implements StockUpdateObserver {
     private Stock stock;
     private Display display;
     private JPanel stats;
@@ -26,39 +27,44 @@ public class StockDisplay extends JPanel {
         this.add(stats);
 
         this.add(Box.createRigidArea(new Dimension(0, 0)));
-        this.add(new DrawGraph(stock, this));
+        this.add(new StockGraph(this.stock.getTicker()));
         initButtons();
+
+        StockMarket.getItemList().add(this);
     }
-    public void reloadStats(){
-        currentPrice.setText("Current Price: " + StockMarket.getStockByTicker(stock.getTicker()).getPriceHistory().get(stock.getPriceHistory().size() -1));
+
+    public void reloadStats() {
+        currentPrice.setText("Current Price: " + DefaultValues.DECIMAL_FORMAT.format((double) StockMarket.getStockByTicker(stock.getTicker()).getPriceHistory().get(stock.getPriceHistory().size() - 1)));
         available.setText("Available: " + StockMarket.getStockByTicker(stock.getTicker()).getAvailable());
         repaint();
     }
 
-    private void initButtons(){
+    private void initButtons() {
         //add button to show all time chart
         JButton button = new JButton("Show All Time Chart");
-        button.addActionListener(e -> DrawGraph.isActive = true);
+        button.addActionListener(e -> StockGraph.setIsAllTime(true));
         button.setAlignmentX(Component.RIGHT_ALIGNMENT);
         button.setAlignmentY(Component.TOP_ALIGNMENT);
-
+        button.setMaximumSize(new Dimension(100, 30));
 
         //add button to show current chart
         JButton button2 = new JButton("Show Current Chart");
-        button2.addActionListener(e -> DrawGraph.isActive = false);
-        button.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        button.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        button2.addActionListener(e -> StockGraph.setIsAllTime(false));
+        button2.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        button2.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        button2.setMaximumSize(new Dimension(100, 30));
 
         JPanel buttonPanel = new JPanel(new GridLayout(1, 0, 0, 0));
         buttonPanel.add(button);
         buttonPanel.add(button2);
+        buttonPanel.setMaximumSize(new Dimension(600, 30));
         this.add(buttonPanel);
     }
 
-    private void initStats(){
-        orders.setLayout(new GridLayout(1,8,20,0));
+    private void initStats() {
+        orders.setLayout(new GridLayout(1, 8, 20, 0));
         orders.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
-        orders.setMaximumSize(new Dimension(1000,20));
+        orders.setMaximumSize(new Dimension(1000, 20));
         orders.setMinimumSize(new Dimension(1000, 20));
 
 
@@ -82,10 +88,9 @@ public class StockDisplay extends JPanel {
         orders.add(buy10);
         orders.add(buy);
 
-
-        stats.setLayout(new GridLayout(1,4));
+        stats.setLayout(new GridLayout(1, 4));
         stats.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
-        stats.setMaximumSize(new Dimension(1000,20));
+        stats.setMaximumSize(new Dimension(1000, 20));
         stats.setMinimumSize(new Dimension(1000, 20));
 
         JLabel ticker = new JLabel("Ticker: " + stock.getTicker(), SwingConstants.CENTER);
@@ -100,31 +105,34 @@ public class StockDisplay extends JPanel {
         available.setFont(DefaultValues.FONT_MAIN);
         available.setForeground(DefaultValues.COLOR_TEXT_MAIN);
 
-        currentPrice = new JLabel("Current Price: " + stock.getPriceHistory().get(stock.getPriceHistory().size() -1), SwingConstants.CENTER);
+        currentPrice = new JLabel("Current Price: " + DefaultValues.DECIMAL_FORMAT.format((double) stock.getPriceHistory().get(stock.getPriceHistory().size() - 1)), SwingConstants.CENTER);
         currentPrice.setFont(DefaultValues.FONT_MAIN);
         currentPrice.setForeground(DefaultValues.COLOR_TEXT_MAIN);
-
-
 
         stats.add(ticker);
         stats.add(currentPrice);
         stats.add(available);
         stats.add(volume);
-
     }
-    private void buy(int amount){
-        if(StockMarket.getStockByTicker(stock.getTicker()).getAvailable() >= amount && UserManager.currentUser.getPortfolio().getBalance() >= amount * stock.getCurrentPrice()){
+
+    private void buy(int amount) {
+        if (StockMarket.getStockByTicker(stock.getTicker()).getAvailable() >= amount && UserManager.currentUser.getPortfolio().getBalance() >= amount * stock.getCurrentPrice()) {
             System.out.println("Bought " + amount + " shares of " + stock.getTicker() + " bought at " + stock.getCurrentTradingPrice());
             UserManager.currentUser.buy(stock, (int) stock.getCurrentTradingPrice(), amount);
             StockMarket.getStockByTicker(stock.getTicker()).setAvailable(stock.getAvailable() - amount);
         }
     }
 
-    private void sell(int amount){
-        if(UserManager.currentUser.getPortfolio().countSharesOfType(stock) >= amount){
-            System.out.println("Sold " + amount + " shares of " + stock.getTicker() + " sold at " +  stock.getCurrentTradingPrice());
+    private void sell(int amount) {
+        if (UserManager.currentUser.getPortfolio().countSharesOfType(stock) >= amount) {
+            System.out.println("Sold " + amount + " shares of " + stock.getTicker() + " sold at " + stock.getCurrentTradingPrice());
             UserManager.currentUser.sell(stock, (int) stock.getCurrentPrice(), amount);
             StockMarket.getStockByTicker(stock.getTicker()).setAvailable(stock.getAvailable() + amount);
         }
+    }
+
+    @Override
+    public void update(List<Stock> stocks) {
+        reloadStats();
     }
 }

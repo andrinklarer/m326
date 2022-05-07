@@ -7,17 +7,22 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
-public class StockOverviewDisplay extends JPanel {
+public class StockOverviewDisplay extends JPanel implements StockUpdateObserver {
     private JLabel label;
     private Display display;
     private JTable jtable;
+    private List<Stock> stocks;
 
     public StockOverviewDisplay(Display display) {
         this.display = display;
         this.label = new JLabel();
 
-        if (StockMarket.getStocks().size() > 0) setComponent();
+        StockMarket.getItemList().add(this);
+        update(StockMarket.getStocks());
+
+        if (stocks.size() > 0) setComponent();
         else label.setText("No Stocks available");
 
         this.add(label);
@@ -26,10 +31,10 @@ public class StockOverviewDisplay extends JPanel {
 
     private void setComponent() {
         String[] columnNames = {"Name", "Current Price", "Available", "+/-%"};
-        String[][] data = StockMarket.getStocks().stream()
+        String[][] data = stocks.stream()
                 .map(stock -> new String[]{
                         stock.getName(),
-                        stock.getPriceHistory().get(stock.getPriceHistory().size() - 1) + "",
+                        String.valueOf(DefaultValues.DECIMAL_FORMAT.format((double) stock.getPriceHistory().get(stock.getPriceHistory().size() - 1))) ,
                         stock.getAvailable() + "",
                         getPlusMinus(10, stock)
                 }).toArray(String[][]::new);
@@ -71,7 +76,7 @@ public class StockOverviewDisplay extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     JTable target = (JTable) e.getSource();
-                    display.setScreenIdentifier(StockMarket.getStockByName((String) target.getValueAt(target.getSelectedRow(), 0)).getTicker() );
+                    display.setScreenIdentifier(StockMarket.getStockByName((String) target.getValueAt(target.getSelectedRow(), 0)).getTicker());
                     display.updateCurrentScreen(2);
                 }
             }
@@ -92,5 +97,14 @@ public class StockOverviewDisplay extends JPanel {
                         - 1) * 100) / 100.0;
         if (result > 0) return "+" + result;
         else return result + "";
+    }
+
+    @Override
+    public void update(List<Stock> stocks) {
+        this.stocks = stocks;
+        this.removeAll();
+        setComponent();
+        this.revalidate();
+        this.repaint();
     }
 }

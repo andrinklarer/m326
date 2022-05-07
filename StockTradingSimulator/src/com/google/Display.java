@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Optional;
 
 public class Display extends JFrame {
     public static Header header;
@@ -15,26 +14,16 @@ public class Display extends JFrame {
     public Display() {
         UserManager.loadUsers();
         StockMarket.loadStocks();
+        StockMarket.startMarket();
+
         screen = new JPanel(new BorderLayout());
         header = new Header(this, "StockOverview", DisplayType.OVERVIEW);
         currentDisplay = new Login(this);
         screenIdentifier = "";
 
-
-
         screen.add(currentDisplay, BorderLayout.CENTER);
 
         setDefaultValues();
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                UserManager.save();
-                StockMarket.save();
-
-                super.windowClosing(e);
-            }
-        });
-
     }
 
     /**
@@ -55,10 +44,14 @@ public class Display extends JFrame {
             case 3 -> currentDisplay = new UserDisplay(this);
             default -> currentDisplay = new Login(this);
         }
+
         screen.add(currentDisplay, BorderLayout.CENTER);
-        if(currentDisplay.getClass().equals(StockDisplay.class)) screen.add(header = new Header(this, StockMarket.getStockByTicker(screenIdentifier).getName(), DisplayType.CHART), BorderLayout.NORTH);
-        if(currentDisplay.getClass().equals(StockOverviewDisplay.class)) screen.add((header = new Header(this, "StockOverview", DisplayType.OVERVIEW)), BorderLayout.NORTH);
-        if(currentDisplay.getClass().equals(UserDisplay.class)) screen.add((header = new Header(this, UserManager.currentUser.getUsername(), DisplayType.PORTFOLIO)), BorderLayout.NORTH);
+        if (currentDisplay.getClass().equals(StockDisplay.class))
+            screen.add(header = new Header(this, StockMarket.getStockByTicker(screenIdentifier).getName(), DisplayType.CHART), BorderLayout.NORTH);
+        if (currentDisplay.getClass().equals(StockOverviewDisplay.class))
+            screen.add((header = new Header(this, "StockOverview", DisplayType.OVERVIEW)), BorderLayout.NORTH);
+        if (currentDisplay.getClass().equals(UserDisplay.class))
+            screen.add((header = new Header(this, UserManager.currentUser.getUsername(), DisplayType.PORTFOLIO)), BorderLayout.NORTH);
         screen.revalidate();
     }
 
@@ -72,6 +65,15 @@ public class Display extends JFrame {
         this.setVisible(true);
         this.setLocationRelativeTo(null);
         this.setSize(1000, 700);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                UserManager.save();
+                StockMarket.save();
+
+                super.windowClosing(e);
+            }
+        });
     }
 
     public String getScreenIdentifier() {

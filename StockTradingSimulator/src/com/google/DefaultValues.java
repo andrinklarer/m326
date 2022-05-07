@@ -1,6 +1,7 @@
 package com.google;
 
 import java.awt.*;
+import java.text.DecimalFormat;
 
 public class DefaultValues {
     public static final Color COLOR_TEXT_MAIN = new Color(0, 0, 0);
@@ -20,4 +21,7 @@ public class DefaultValues {
     public static final Font FONT_MAIN = new Font("Dialog", Font.PLAIN,12);
     public static final Font FONT_BOLD =new Font("Dialog", Font.BOLD,12);
     public static final Font FONT_TITLE = new Font("Dialog", Font.BOLD,36);
+
+    public static final int MIN_SCORE = 0;
+    public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
 }

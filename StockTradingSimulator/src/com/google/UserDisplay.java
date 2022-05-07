@@ -8,9 +8,10 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.function.Function;
 
-public class UserDisplay extends JPanel {
+public class UserDisplay extends JPanel implements StockUpdateObserver {
     private static final DecimalFormat df = new DecimalFormat("0.00");
     private Display display;
     private JLabel balanceLabel;
@@ -23,6 +24,7 @@ public class UserDisplay extends JPanel {
         this.add(balanceLabel);
         setComponent();
         setComponent2();
+        StockMarket.getItemList().add(this);
     }
 
     private void setComponent() {
@@ -156,5 +158,15 @@ public class UserDisplay extends JPanel {
 
         if (percent > 0) return "+" + df.format(percent);
         else return df.format(percent);
+    }
+
+    @Override
+    public void update(List<Stock> stocks) {
+        this.removeAll();
+        this.add(balanceLabel);
+        setComponent();
+        setComponent2();
+        revalidate();
+        repaint();
     }
 }

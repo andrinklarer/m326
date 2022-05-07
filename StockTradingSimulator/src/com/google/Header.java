@@ -27,7 +27,7 @@ public class Header extends JPanel {
     }
 
     public void setUpTitleContainer(String title) {
-        titleLabel = new JLabel(title);
+        titleLabel = new JLabel(title, SwingConstants.CENTER);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setFont(DefaultValues.FONT_TITLE);
     }
