@@ -5,25 +5,22 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class Header extends JPanel {
-    private Searchbar searchbar;
     private JButton multiuseButton;
     private JButton switchDisplayButton;
-    private JLabel titleLabel;
     private final Display parent;
+
+    private JLabel titleLabel;
+    private UserProfileButton userProfileButton;
+    private JButton overViewButton;
 
     public Header(Display parent, String title, DisplayType type) {
         this.parent = parent;
-        searchbar = new Searchbar();
-        if (type == DisplayType.CHART) {
-            setUpBackButton();
-            setUpSwitchDisplayButton("Portfolio", 3);
-        } else {
-            setUpRefreshButton();
-            setUpSwitchDisplayButton(DisplayType.PORTFOLIO == type ? "Overview" : "Portfolio", DisplayType.PORTFOLIO == type ? 1 : 3);
-        }
 
+        if (type != DisplayType.OVERVIEW) setUpOverviewButton();
+        setUpUserProfileButton();
         setUpTitleContainer(title);
-        setUpPanel();
+
+        setUpPanel(type);
     }
 
     public void setUpTitleContainer(String title) {
@@ -32,39 +29,32 @@ public class Header extends JPanel {
         titleLabel.setFont(DefaultValues.FONT_TITLE);
     }
 
-    public void updateTitle(String title) {
-        this.titleLabel.setText(title);
-        repaint();
+    private void setUpOverviewButton() {
+        overViewButton = new JButton();
+        overViewButton.setText("Overview");
+        overViewButton.setFocusable(false);
+        overViewButton.addActionListener(e -> parent.updateCurrentScreen(1));
+        overViewButton.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
     }
 
-    private void setUpRefreshButton() {
-        multiuseButton = new JButton();
-        multiuseButton.setText("Refresh");
-        multiuseButton.setFocusable(false);
+    private void setUpUserProfileButton() {
+        userProfileButton = new UserProfileButton();
+        userProfileButton.setMaximumSize(new Dimension(40, 40));
+        userProfileButton.addActionListener(e -> parent.updateCurrentScreen(3));
+        userProfileButton.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
     }
 
-    private void setUpSwitchDisplayButton(String text, int screenValue) {
-        switchDisplayButton = new JButton();
-        switchDisplayButton.setText(text);
-        switchDisplayButton.setFocusable(false);
-        switchDisplayButton.addActionListener(e -> parent.updateCurrentScreen(screenValue));
+    public void update(){
+        userProfileButton.updateBalance();
     }
 
-    private void setUpBackButton() {
-        multiuseButton = new JButton();
-        multiuseButton.setText("Back");
-        multiuseButton.setFocusable(false);
-        multiuseButton.addActionListener(e -> parent.updateCurrentScreen(1));
-    }
-
-    private void setUpPanel() {
+    private void setUpPanel(DisplayType type) {
         this.setBorder(new EmptyBorder(10, 10, 10, 10));
-        this.setLayout(new GridLayout(1, 4));
-        this.add(multiuseButton);
-        this.add(switchDisplayButton);
-        //TODO: center the title
-        this.add(titleLabel);
-        this.add(searchbar);
+        this.setLayout(new BorderLayout());
+
+        if (type != DisplayType.OVERVIEW) this.add(overViewButton, BorderLayout.WEST);
+        this.add(titleLabel, BorderLayout.CENTER);
+        this.add(userProfileButton, BorderLayout.EAST);
 
         this.setBackground(DefaultValues.COLOR_BACKGROUND_DARK);
     }

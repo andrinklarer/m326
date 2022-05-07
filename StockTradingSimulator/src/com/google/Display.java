@@ -80,6 +80,9 @@ public class Display extends JFrame {
         return screenIdentifier;
     }
 
+    public void updateHeader() {
+        header.update();
+    }
 
     public void setScreenIdentifier(String screenIdentifier) {
         this.screenIdentifier = screenIdentifier;

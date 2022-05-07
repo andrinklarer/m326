@@ -23,12 +23,13 @@ public class StockDisplay extends JPanel implements StockUpdateObserver {
         this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
 
         initStats();
-        this.add(orders);
-        this.add(stats);
 
-        this.add(Box.createRigidArea(new Dimension(0, 0)));
-        this.add(new StockGraph(this.stock.getTicker()));
+        this.add(Box.createRigidArea(new Dimension(0, 10)));
         initButtons();
+        this.add(Box.createRigidArea(new Dimension(0, 10)));
+        this.add(stats);
+        this.add(new StockGraph(this.stock.getTicker()));
+        this.add(orders);
 
         StockMarket.getItemList().add(this);
     }
@@ -46,6 +47,7 @@ public class StockDisplay extends JPanel implements StockUpdateObserver {
         button.setAlignmentX(Component.RIGHT_ALIGNMENT);
         button.setAlignmentY(Component.TOP_ALIGNMENT);
         button.setMaximumSize(new Dimension(100, 30));
+        button.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
 
         //add button to show current chart
         JButton button2 = new JButton("Show Current Chart");
@@ -53,6 +55,7 @@ public class StockDisplay extends JPanel implements StockUpdateObserver {
         button2.setAlignmentX(Component.RIGHT_ALIGNMENT);
         button2.setAlignmentY(Component.BOTTOM_ALIGNMENT);
         button2.setMaximumSize(new Dimension(100, 30));
+        button2.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
 
         JPanel buttonPanel = new JPanel(new GridLayout(1, 0, 0, 0));
         buttonPanel.add(button);
@@ -121,6 +124,7 @@ public class StockDisplay extends JPanel implements StockUpdateObserver {
             UserManager.currentUser.buy(stock, (int) stock.getCurrentTradingPrice(), amount);
             StockMarket.getStockByTicker(stock.getTicker()).setAvailable(stock.getAvailable() - amount);
         }
+        display.updateHeader();
     }
 
     private void sell(int amount) {
@@ -129,6 +133,7 @@ public class StockDisplay extends JPanel implements StockUpdateObserver {
             UserManager.currentUser.sell(stock, (int) stock.getCurrentPrice(), amount);
             StockMarket.getStockByTicker(stock.getTicker()).setAvailable(stock.getAvailable() + amount);
         }
+        display.updateHeader();
     }
 
     @Override
