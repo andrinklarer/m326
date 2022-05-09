@@ -10,9 +10,6 @@ public class Share implements Serializable
     private LocalDateTime timeStamp;
     private int amount;
 
-    public Share() {
-    }
-
     public Share(Stock stock, double buyPrice, LocalDateTime timeStamp, int amount) {
         this.stock = stock;
         this.buyPrice = buyPrice;

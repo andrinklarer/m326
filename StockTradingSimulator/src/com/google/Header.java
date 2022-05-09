@@ -5,8 +5,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class Header extends JPanel {
-    private JButton multiuseButton;
-    private JButton switchDisplayButton;
     private final Display parent;
 
     private JLabel titleLabel;
@@ -15,7 +13,6 @@ public class Header extends JPanel {
 
     public Header(Display parent, String title, DisplayType type) {
         this.parent = parent;
-
         if (type != DisplayType.OVERVIEW) setUpOverviewButton();
         setUpUserProfileButton();
         setUpTitleContainer(title);
@@ -46,6 +43,7 @@ public class Header extends JPanel {
 
     public void update(){
         userProfileButton.updateBalance();
+
     }
 
     private void setUpPanel(DisplayType type) {
@@ -55,6 +53,7 @@ public class Header extends JPanel {
         if (type != DisplayType.OVERVIEW) this.add(overViewButton, BorderLayout.WEST);
         this.add(titleLabel, BorderLayout.CENTER);
         this.add(userProfileButton, BorderLayout.EAST);
+
 
         this.setBackground(DefaultValues.COLOR_BACKGROUND_DARK);
     }

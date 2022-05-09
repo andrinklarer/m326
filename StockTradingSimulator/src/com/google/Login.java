@@ -25,6 +25,7 @@ public class Login extends JPanel {
         setDefaultValues();
     }
 
+    //setup login page
     private void setComponents() {
         errorMessage = new JLabel();
         errorMessage.setFocusable(false);

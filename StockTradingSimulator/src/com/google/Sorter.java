@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+//Would be used in the searchbar to search for approximate stocks (fully functional but not used in the program)
 public class Sorter {
     List<Stock> stocks = new ArrayList<Stock>();
     {

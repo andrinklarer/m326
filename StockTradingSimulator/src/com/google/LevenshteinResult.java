@@ -1,6 +1,6 @@
 package com.google;
 
-
+// would be used in the Searchbar
 public class LevenshteinResult {
     private Stock source;
     private Integer distance;

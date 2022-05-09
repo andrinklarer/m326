@@ -7,19 +7,19 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.function.Function;
 
 import static java.awt.GridBagConstraints.*;
 
 public class UserDisplay extends JPanel implements StockUpdateObserver {
-    private static final DecimalFormat df = new DecimalFormat("0.00");
-    private Display display;
+    private final Display display;
     private JTable jtable;
-    private JLabel currentSharesLabel;
-    private JLabel historySharesLabel;
+    private final JLabel currentSharesLabel;
+    private final JLabel historySharesLabel;
 
+
+    //Constructor
     public UserDisplay(Display display) {
         this.display = display;
         this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
@@ -36,6 +36,8 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         StockMarket.getItemList().add(this);
     }
 
+
+    //Methods
     private void setUpUserDisplay() {
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -70,7 +72,7 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
                 int amount = share.getAmount();
                 double boughtFor = share.getBuyPrice() * amount;
                 double currentValue = share.getStock().getCurrentPrice() * amount;
-                return new String[]{share.getStock().getName(), amount + "", df.format(share.getBuyPrice()), df.format(boughtFor), df.format(currentValue), df.format(currentValue - boughtFor), getPlusMinus(boughtFor / amount, share.getStock()),};
+                return new String[]{share.getStock().getName(), amount + "", DefaultValues.DECIMAL_FORMAT.format(share.getBuyPrice()), DefaultValues.DECIMAL_FORMAT.format(boughtFor), DefaultValues.DECIMAL_FORMAT.format(currentValue), DefaultValues.DECIMAL_FORMAT.format(currentValue - boughtFor), getPlusMinus(boughtFor / amount, share.getStock()),};
             }
         }).toArray(String[][]::new);
 
@@ -131,7 +133,7 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
                 int amount = share.getAmount();
                 double boughtFor = share.getBuyPrice() * amount;
                 double currentValue = share.getStock().getCurrentPrice() * amount;
-                return new String[]{share.getStock().getName(), amount + "", df.format(share.getBuyPrice()), df.format(boughtFor), df.format(currentValue), df.format(currentValue - boughtFor), getPlusMinus(boughtFor / amount, share.getStock()),};
+                return new String[]{share.getStock().getName(), amount + "", DefaultValues.DECIMAL_FORMAT.format(share.getBuyPrice()), DefaultValues.DECIMAL_FORMAT.format(boughtFor), DefaultValues.DECIMAL_FORMAT.format(currentValue), DefaultValues.DECIMAL_FORMAT.format(currentValue - boughtFor), getPlusMinus(boughtFor / amount, share.getStock()),};
             }
         }).toArray(String[][]::new);
 
@@ -188,10 +190,12 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         double profitLoss = currentValue - boughtFor;
         double percent = profitLoss / boughtFor * 100;
 
-        if (percent > 0) return "+" + df.format(percent);
-        else return df.format(percent);
+        if (percent > 0) return "+" + DefaultValues.DECIMAL_FORMAT.format(percent);
+        else return DefaultValues.DECIMAL_FORMAT.format(percent);
     }
 
+
+    //Implements
     @Override
     public void update(List<Stock> stocks) {
         this.removeAll();
