@@ -6,6 +6,8 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
+
+        //Initialize some users and stocks - comment this out to use the data from the file
         List<Stock> stocks = new ArrayList<>();
         stocks.add(new Stock("Apple", "AAPL", 100000, 1000, 100.0, 120.0));
         stocks.add(new Stock("Google", "GOOG", 200000, 2000, 300.0, 200.0));

@@ -41,25 +41,7 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
             }
         }).toArray(String[][]::new);
 
-        jtable = new JTable(data, columnNames);
-
-        jtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        jtable.setShowVerticalLines(false);
-
-        jtable.setFont(DefaultValues.FONT_MAIN);
-        jtable.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
-
-        jtable.getTableHeader().setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
-        jtable.getTableHeader().setFont(DefaultValues.FONT_BOLD);
-        jtable.getTableHeader().setBorder(new EmptyBorder(0, 0, 0, 0));
-        jtable.getTableHeader().setReorderingAllowed(false);
-
-        jtable.setModel(new DefaultTableModel(data, columnNames) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        });
+        initTable(columnNames, data);
         jtable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -72,6 +54,10 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
                 return component;
             }
         });
+        applyClickListener();
+    }
+
+    private void applyClickListener() {
         jtable.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -105,6 +91,12 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
             }
         }).toArray(String[][]::new);
 
+        initTable(columnNames, data);
+
+        applyClickListener();
+    }
+
+    private void initTable(String[] columnNames, String[][] data) {
         jtable = new JTable(data, columnNames);
 
         jtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -124,21 +116,6 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
                 return false;
             }
         });
-
-        jtable.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    JTable target = (JTable) e.getSource();
-                    display.setScreenIdentifier(StockMarket.getStockByName((String) target.getValueAt(target.getSelectedRow(), 0)).getTicker());
-                    display.updateCurrentScreen(2);
-                }
-            }
-        });
-        JScrollPane pane = new JScrollPane(jtable);
-        pane.getViewport().setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
-        pane.setBorder(new EmptyBorder(0, 0, 0, 0));
-
-        this.add(pane);
     }
 
     private String getPlusMinus(double boughtFor, Stock stock) {

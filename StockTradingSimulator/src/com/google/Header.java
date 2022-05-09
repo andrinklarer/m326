@@ -16,7 +16,6 @@ public class Header extends JPanel {
             setUpBackButton();
             setUpSwitchDisplayButton("Portfolio", 3);
         } else {
-           // setUpRefreshButton();
             setUpSwitchDisplayButton(DisplayType.PORTFOLIO == type ? "Overview" : "Portfolio", DisplayType.PORTFOLIO == type ? 1 : 3);
         }
 
@@ -28,17 +27,6 @@ public class Header extends JPanel {
         titleLabel = new JLabel(title, SwingConstants.CENTER);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setFont(DefaultValues.FONT_TITLE);
-    }
-
-    public void updateTitle(String title) {
-        this.titleLabel.setText(title);
-        repaint();
-    }
-
-    private void setUpRefreshButton() {
-        multiuseButton = new JButton();
-        multiuseButton.setText("Refresh");
-        multiuseButton.setFocusable(false);
     }
 
     private void setUpSwitchDisplayButton(String text, int screenValue) {
@@ -62,7 +50,6 @@ public class Header extends JPanel {
             this.add(multiuseButton);
         }
         this.add(switchDisplayButton);
-        //TODO: center the title
         this.add(titleLabel);
 
         this.setBackground(DefaultValues.COLOR_BACKGROUND_DARK);

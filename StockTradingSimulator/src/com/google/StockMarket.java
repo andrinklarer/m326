@@ -51,6 +51,7 @@ public class StockMarket {
             for (StockUpdateObserver observer: itemList) observer.update(stocks);
         }
 
+        // Generates a new number for the stock price
         public double semiRandomNumber(List<Double> allTimeChartScores) {
             double lastScore = allTimeChartScores.get(allTimeChartScores.size() - 1);
             if (lastScore == DefaultValues.MIN_SCORE) {
