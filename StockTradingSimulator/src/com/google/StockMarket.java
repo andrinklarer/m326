@@ -57,7 +57,7 @@ public class StockMarket {
                 return DefaultValues.MIN_SCORE;
             }
             //rare chance to crash
-            if ((int) (Math.random() * 2000) == 100) {
+            if ((int) (Math.random() * 200_000) == 100) {
                 return DefaultValues.MIN_SCORE;
             }
             if (lastScore <= allTimeChartScores.stream().mapToDouble(value -> value)

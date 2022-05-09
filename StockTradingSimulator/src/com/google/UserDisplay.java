@@ -11,23 +11,56 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.awt.GridBagConstraints.*;
+
 public class UserDisplay extends JPanel implements StockUpdateObserver {
     private static final DecimalFormat df = new DecimalFormat("0.00");
     private Display display;
-    private JLabel balanceLabel;
     private JTable jtable;
+    private JLabel currentSharesLabel;
+    private JLabel historySharesLabel;
 
     public UserDisplay(Display display) {
         this.display = display;
         this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
-        balanceLabel = new JLabel("Balance: " + df.format(UserManager.currentUser.getPortfolio().getBalance()));
-        this.add(balanceLabel);
-        setComponent();
-        setComponent2();
+        this.setLayout(new GridBagLayout());
+
+        currentSharesLabel = new JLabel("Owned Shares", SwingConstants.CENTER);
+        currentSharesLabel.setFont(DefaultValues.FONT_TITLE);
+
+        historySharesLabel = new JLabel("Shares History", SwingConstants.CENTER);
+        historySharesLabel.setFont(DefaultValues.FONT_TITLE);
+
+        setUpUserDisplay();
+
         StockMarket.getItemList().add(this);
     }
 
-    private void setComponent() {
+    private void setUpUserDisplay() {
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = FIRST_LINE_START;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        this.add(currentSharesLabel, gridBagConstraints);
+
+        gridBagConstraints.anchor = FIRST_LINE_START;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        this.add(historySharesLabel, gridBagConstraints);
+
+        gridBagConstraints.anchor = LINE_START;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        setCurrentTable(gridBagConstraints);
+
+        gridBagConstraints.anchor = LINE_END;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        setHistoryTable(gridBagConstraints);
+    }
+
+    private void setCurrentTable(GridBagConstraints gridBagConstraints) {
 
         String[] columnNames = {"Stock", "Amount", "Bought at", "Bought for", "Value", "Profit/Loss", "+/-%"};
 
@@ -85,10 +118,10 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         pane.getViewport().setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
         pane.setBorder(new EmptyBorder(0, 0, 0, 0));
 
-        this.add(pane);
+        this.add(pane, gridBagConstraints);
     }
 
-    private void setComponent2() {
+    private void setHistoryTable(GridBagConstraints gridBagConstraints) {
 
         String[] columnNames = {"Stock", "Amount", "Bought at", "Bought for", "Value", "Profit/Loss", "+/-%"};
 
@@ -146,7 +179,7 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         pane.getViewport().setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
         pane.setBorder(new EmptyBorder(0, 0, 0, 0));
 
-        this.add(pane);
+        this.add(pane, gridBagConstraints);
     }
 
     private String getPlusMinus(double boughtFor, Stock stock) {
@@ -154,7 +187,6 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         double currentValue = stock.getCurrentPrice();
         double profitLoss = currentValue - boughtFor;
         double percent = profitLoss / boughtFor * 100;
-        System.out.println(percent);
 
         if (percent > 0) return "+" + df.format(percent);
         else return df.format(percent);
@@ -163,9 +195,9 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
     @Override
     public void update(List<Stock> stocks) {
         this.removeAll();
-        this.add(balanceLabel);
-        setComponent();
-        setComponent2();
+
+        setUpUserDisplay();
+
         revalidate();
         repaint();
     }
