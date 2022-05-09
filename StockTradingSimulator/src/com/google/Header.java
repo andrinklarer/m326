@@ -5,7 +5,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class Header extends JPanel {
-    private Searchbar searchbar;
     private JButton multiuseButton;
     private JButton switchDisplayButton;
     private JLabel titleLabel;
@@ -13,12 +12,11 @@ public class Header extends JPanel {
 
     public Header(Display parent, String title, DisplayType type) {
         this.parent = parent;
-        searchbar = new Searchbar();
         if (type == DisplayType.CHART) {
             setUpBackButton();
             setUpSwitchDisplayButton("Portfolio", 3);
         } else {
-            setUpRefreshButton();
+           // setUpRefreshButton();
             setUpSwitchDisplayButton(DisplayType.PORTFOLIO == type ? "Overview" : "Portfolio", DisplayType.PORTFOLIO == type ? 1 : 3);
         }
 
@@ -60,11 +58,12 @@ public class Header extends JPanel {
     private void setUpPanel() {
         this.setBorder(new EmptyBorder(10, 10, 10, 10));
         this.setLayout(new GridLayout(1, 4));
-        this.add(multiuseButton);
+        if (multiuseButton != null) {
+            this.add(multiuseButton);
+        }
         this.add(switchDisplayButton);
         //TODO: center the title
         this.add(titleLabel);
-        this.add(searchbar);
 
         this.setBackground(DefaultValues.COLOR_BACKGROUND_DARK);
     }

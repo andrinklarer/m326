@@ -23,7 +23,7 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         balanceLabel = new JLabel("Balance: " + df.format(UserManager.currentUser.getPortfolio().getBalance()));
         this.add(balanceLabel);
         setComponent();
-        setComponent2();
+        setHistory();
         StockMarket.getItemList().add(this);
     }
 
@@ -88,17 +88,20 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         this.add(pane);
     }
 
-    private void setComponent2() {
 
-        String[] columnNames = {"Stock", "Amount", "Bought at", "Bought for", "Value", "Profit/Loss", "+/-%"};
+    private void setHistory() {
+
+        String[] columnNames = {"Stock", "Amount", "Sold at", "Value"};
 
         String[][] data = UserManager.currentUser.getPortfolio().getSellHistory().stream().map(new Function<Share, String[]>() {
             @Override
             public String[] apply(Share share) {
                 int amount = share.getAmount();
-                double boughtFor = share.getBuyPrice() * amount;
-                double currentValue = share.getStock().getCurrentPrice() * amount;
-                return new String[]{share.getStock().getName(), amount + "", df.format(share.getBuyPrice()), df.format(boughtFor), df.format(currentValue), df.format(currentValue - boughtFor), getPlusMinus(boughtFor / amount, share.getStock()),};
+                double soldValue = share.getBuyPrice() * amount;
+                return new String[]{share.getStock().getName(),
+                        amount + "",
+                        df.format(share.getBuyPrice()),
+                        df.format(soldValue)};
             }
         }).toArray(String[][]::new);
 
@@ -121,18 +124,7 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
                 return false;
             }
         });
-        jtable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (((String) table.getValueAt(row, 6)).contains("+"))
-                    component.setForeground(DefaultValues.COLOR_TEXT_POSITIVE);
-                else if (((String) table.getValueAt(row, 6)).contains("-"))
-                    component.setForeground(DefaultValues.COLOR_TEXT_ERROR);
-                else component.setForeground(DefaultValues.COLOR_TEXT_MAIN);
-                return component;
-            }
-        });
+
         jtable.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -165,7 +157,7 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         this.removeAll();
         this.add(balanceLabel);
         setComponent();
-        setComponent2();
+        setHistory();
         revalidate();
         repaint();
     }
