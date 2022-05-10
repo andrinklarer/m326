@@ -47,7 +47,7 @@ public class StockMarket {
     public static class StockMarketUpdate implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            for (Stock stock:stocks) stock.addPriceToHistory(semiRandomNumber(stock.getPriceHistory()));
+            for (Stock stock:stocks) if (stock.getCurrentPrice() != 0) stock.addPriceToHistory(semiRandomNumber(stock.getPriceHistory()));
             for (StockUpdateObserver observer: itemList) observer.update(stocks);
         }
 

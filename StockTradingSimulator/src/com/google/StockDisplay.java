@@ -119,7 +119,7 @@ public class StockDisplay extends JPanel implements StockUpdateObserver {
     }
 
     private void buy(int amount) {
-        if (StockMarket.getStockByTicker(stock.getTicker()).getAvailable() >= amount && UserManager.currentUser.getPortfolio().getBalance() >= amount * stock.getCurrentPrice()) {
+        if (StockMarket.getStockByTicker(stock.getTicker()).getAvailable() >= amount && UserManager.currentUser.getPortfolio().getBalance() >= amount * stock.getCurrentPrice() && stock.getCurrentPrice() != 0) {
             System.out.println("Bought " + amount + " shares of " + stock.getTicker() + " bought at " + stock.getCurrentTradingPrice());
             UserManager.currentUser.buy(stock, (int) stock.getCurrentTradingPrice(), amount);
             StockMarket.getStockByTicker(stock.getTicker()).setAvailable(stock.getAvailable() - amount);
@@ -128,8 +128,8 @@ public class StockDisplay extends JPanel implements StockUpdateObserver {
     }
 
     private void sell(int amount) {
-        if (UserManager.currentUser.getPortfolio().countSharesOfType(stock) >= amount) {
-            System.out.println("Sold " + amount + " shares of " + stock.getTicker() + " sold at " + stock.getCurrentTradingPrice());
+        if (UserManager.currentUser.getPortfolio().countSharesOfType(stock) >= amount && stock.getCurrentPrice() != 0) {
+            System.out.println("Sold " + amount + " shares of " + stock.getTicker() + " sold at " + stock.getCurrentTradingPrice() );
             UserManager.currentUser.sell(stock, (int) stock.getCurrentPrice(), amount);
             StockMarket.getStockByTicker(stock.getTicker()).setAvailable(stock.getAvailable() + amount);
         }

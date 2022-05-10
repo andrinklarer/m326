@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StockGraph extends JPanel implements StockUpdateObserver {
-    private static final int BORDER_GAP = 60;
+    private static final int BORDER_GAP = 70;
     private static final int Y_BORDER_GAP = 30;
     private static final int MAX_AMOUNT_HATCHES = 20;
     private static final int GRAPH_POINT_WIDTH = 12;
@@ -59,7 +59,7 @@ public class StockGraph extends JPanel implements StockUpdateObserver {
             MIN_Y = (int) Math.min(
                     (int) usedChartScores.stream().mapToDouble(value -> value).average().orElse(0) / 2.0,
                     (int) usedChartScores.stream().mapToDouble(value -> value).min().orElse(0));
-        }MAX_Y = (int) (usedChartScores.stream().mapToDouble(value -> value).max().orElse(1000));
+        }MAX_Y = Math.max((int) (usedChartScores.stream().mapToDouble(value -> value).max().orElse(1000)), 1);
         if (this.getGraphics() != null) paintComponent(this.getGraphics());
     }
 
