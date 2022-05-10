@@ -37,16 +37,8 @@ public class Stock implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getTicker() {
         return ticker;
-    }
-
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
     }
 
     public List<Double> getPriceHistory() {
@@ -67,17 +59,9 @@ public class Stock implements Serializable {
     public double getCurrentPrice() {
         return priceHistory.get(priceHistory.size() - 1);
     }
-    public double getCurrentTradingPrice() {
-        return priceHistory.get(priceHistory.size() - 4);
-    }
-
 
     public int getVolume() {
         return volume;
-    }
-
-    public void setVolume(int volume) {
-        this.volume = volume;
     }
 
     public int getAvailable() {

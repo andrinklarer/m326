@@ -34,12 +34,18 @@ public class StockDisplay extends JPanel implements StockUpdateObserver {
         StockMarket.getItemList().add(this);
     }
 
+    /**
+     * This method sets the text of labels
+     */
     public void reloadStats() {
         currentPrice.setText("Current Price: " + DefaultValues.DECIMAL_FORMAT.format((double) StockMarket.getStockByTicker(stock.getTicker()).getPriceHistory().get(stock.getPriceHistory().size() - 1)));
         available.setText("Available: " + StockMarket.getStockByTicker(stock.getTicker()).getAvailable());
         repaint();
     }
 
+    /**
+     * This method initializes the buttons and sets there default style and function
+     */
     private void initButtons() {
         //add button to show all time chart
         JButton button = new JButton("Show All Time Chart");
@@ -64,6 +70,10 @@ public class StockDisplay extends JPanel implements StockUpdateObserver {
         this.add(buttonPanel);
     }
 
+
+    /**
+     * This method sets the stats panel and adds labels with the stock information to the panel
+     */
     private void initStats() {
         orders.setLayout(new GridLayout(1, 8, 20, 0));
         orders.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
@@ -118,24 +128,40 @@ public class StockDisplay extends JPanel implements StockUpdateObserver {
         stats.add(volume);
     }
 
+    /**
+     * This method first checks if the user has enough money,
+     * if so than the stock with the according amount will be added to the profile
+     * and the amount subtracted fromm the available stocks
+     * @param amount the number of stocks to buy
+     */
     private void buy(int amount) {
         if (StockMarket.getStockByTicker(stock.getTicker()).getAvailable() >= amount && UserManager.currentUser.getPortfolio().getBalance() >= amount * stock.getCurrentPrice()) {
-            System.out.println("Bought " + amount + " shares of " + stock.getTicker() + " bought at " + stock.getCurrentTradingPrice());
-            UserManager.currentUser.buy(stock, (int) stock.getCurrentTradingPrice(), amount);
+            System.out.println("Bought " + amount + " shares of " + stock.getTicker() + " bought at " + stock.getCurrentPrice());
+            UserManager.currentUser.buy(stock, (int) stock.getCurrentPrice(), amount);
             StockMarket.getStockByTicker(stock.getTicker()).setAvailable(stock.getAvailable() - amount);
         }
         display.updateHeader();
     }
 
+    /**
+     * This method first checks if the user has enough stocks to sell,
+     * if so than the stock will be removed from the list of current stocks
+     * and added to the history, the price of the stock will be added to the user balance
+     * @param amount the number of stocks to sell
+     */
     private void sell(int amount) {
         if (UserManager.currentUser.getPortfolio().countSharesOfType(stock) >= amount) {
-            System.out.println("Sold " + amount + " shares of " + stock.getTicker() + " sold at " + stock.getCurrentTradingPrice());
+            System.out.println("Sold " + amount + " shares of " + stock.getTicker() + " sold at " + stock.getCurrentPrice());
             UserManager.currentUser.sell(stock, (int) stock.getCurrentPrice(), amount);
             StockMarket.getStockByTicker(stock.getTicker()).setAvailable(stock.getAvailable() + amount);
         }
         display.updateHeader();
     }
 
+    /**
+     * This method updates the stock list and reload the panel
+     * @param stocks the new list of stocks
+     */
     @Override
     public void update(List<Stock> stocks) {
         reloadStats();

@@ -3,6 +3,14 @@ package com.google;
 import java.io.*;
 
 public class Filehandler {
+    /**
+     * This method stores an object into a file,
+     * if the file does not already exist a new one will be generated,
+     * else the file will be overridden.
+     * The object needs to implement 'Serializable'
+     * @param filepath the path to the file
+     * @param input the object to be saved
+     */
     public static void writeFile(String filepath, Object input) {
         File file = new File(filepath);
         try {
@@ -19,6 +27,11 @@ public class Filehandler {
         }
     }
 
+    /**
+     * This method reads the content of a file and returns it as an object
+     * @param filepath the path to the file
+     * @return a object of the file content
+     */
     public static Object readFile(String filepath) {
         File file = new File(filepath);
         Object fileContent = null;

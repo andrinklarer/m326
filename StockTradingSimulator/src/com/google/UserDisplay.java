@@ -18,8 +18,6 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
     private final JLabel currentSharesLabel;
     private final JLabel historySharesLabel;
 
-
-    //Constructor
     public UserDisplay(Display display) {
         this.display = display;
         this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
@@ -36,8 +34,9 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         StockMarket.getItemList().add(this);
     }
 
-
-    //Methods
+    /**
+     * This method will set the default values of the display
+     */
     private void setUpUserDisplay() {
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -62,6 +61,10 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         setHistoryTable(gridBagConstraints);
     }
 
+    /**
+     * This method will add the current stock table to the panel
+     * @param gridBagConstraints the position of the table
+     */
     private void setCurrentTable(GridBagConstraints gridBagConstraints) {
 
         String[] columnNames = {"Stock", "Amount", "Bought at", "Bought for", "Value", "Profit/Loss", "+/-%"};
@@ -123,6 +126,10 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         this.add(pane, gridBagConstraints);
     }
 
+    /**
+     * Sets the history history table to the panel
+     * @param gridBagConstraints the position of the table
+     */
     private void setHistoryTable(GridBagConstraints gridBagConstraints) {
 
         String[] columnNames = {"Stock", "Amount", "Bought at", "Bought for", "Value", "Profit/Loss", "+/-%"};
@@ -184,6 +191,12 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         this.add(pane, gridBagConstraints);
     }
 
+    /**
+     * This method will check if the user has made profit or loss
+     * @param boughtFor the price where the stock was bought
+     * @param stock the current stock to check
+     * @return the trend in percent
+     */
     private String getPlusMinus(double boughtFor, Stock stock) {
         //calculate the profit/loss
         double currentValue = stock.getCurrentPrice();
@@ -194,8 +207,10 @@ public class UserDisplay extends JPanel implements StockUpdateObserver {
         else return DefaultValues.DECIMAL_FORMAT.format(percent);
     }
 
-
-    //Implements
+    /**
+     * This method updates the stock list and reload the panel
+     * @param stocks the new list of stocks
+     */
     @Override
     public void update(List<Stock> stocks) {
         this.removeAll();

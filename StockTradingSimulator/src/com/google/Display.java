@@ -55,6 +55,9 @@ public class Display extends JFrame {
         screen.revalidate();
     }
 
+    /**
+     * This method sets the default values of the frame
+     */
     public void setDefaultValues() {
         this.setTitle("Stock Trading Simulator - Andy, Jannik");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,10 +79,9 @@ public class Display extends JFrame {
         });
     }
 
-    public String getScreenIdentifier() {
-        return screenIdentifier;
-    }
-
+    /**
+     * This method is used to update the header
+     */
     public void updateHeader() {
         header.update();
     }

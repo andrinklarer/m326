@@ -1,8 +1,6 @@
 package com.google;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -15,15 +13,24 @@ public class StockMarket {
     private static Timer timer;
     private static final int TIMER_DELAY = 1000;
 
+    /**
+     * This method will load the data from the saved file
+     */
     public static void loadStocks() {
         stocks = (List<Stock>) Filehandler.readFile(DefaultValues.STOCK_DATA_FILE_PATH);
     }
 
+    /**
+     * This method will start the timer, which updates the stocks
+     */
     public static void startMarket() {
         timer = new Timer(TIMER_DELAY, new StockMarketUpdate());
         timer.start();
     }
 
+    /**
+     * This method will save the stocks into a file
+     */
     public static void save() {
         Filehandler.writeFile(DefaultValues.STOCK_DATA_FILE_PATH, stocks);
     }
@@ -44,14 +51,25 @@ public class StockMarket {
         return itemList;
     }
 
+    /**
+     * This class is used to update the stocks
+     */
     public static class StockMarketUpdate implements ActionListener {
+        /**
+         * This method will be called from the timer to update the stocks and call the list elements
+         * @param e the timer event
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
             for (Stock stock:stocks) stock.addPriceToHistory(semiRandomNumber(stock.getPriceHistory()));
             for (StockUpdateObserver observer: itemList) observer.update(stocks);
         }
 
-        // Generates a new number for the stock price
+        /**
+         * This method will generate a new value of the stock
+         * @param allTimeChartScores the history of the stock value
+         * @return the newly generated value
+         */
         public double semiRandomNumber(List<Double> allTimeChartScores) {
             double lastScore = allTimeChartScores.get(allTimeChartScores.size() - 1);
             if (lastScore == DefaultValues.MIN_SCORE) {

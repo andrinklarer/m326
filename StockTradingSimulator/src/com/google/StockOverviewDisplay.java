@@ -29,6 +29,9 @@ public class StockOverviewDisplay extends JPanel implements StockUpdateObserver 
         this.setBackground(DefaultValues.COLOR_BACKGROUND_MAIN);
     }
 
+    /**
+     * This method will add all the table with the stock stats to the panel
+     */
     private void setComponent() {
         String[] columnNames = {"Name", "Current Price", "Available", "+/-%"};
         String[][] data = stocks.stream()
@@ -89,6 +92,12 @@ public class StockOverviewDisplay extends JPanel implements StockUpdateObserver 
         this.add(pane);
     }
 
+    /**
+     * This method will check if the trend of the stock is positive or negative
+     * @param lastPosition position to check
+     * @param stock the current stock to check
+     * @return the trend in percent
+     */
     private String getPlusMinus(int lastPosition, Stock stock) {
         double result = Math.round(
                 (stock.getPriceHistory().get(stock.getPriceHistory().size() - 1) /
@@ -99,6 +108,10 @@ public class StockOverviewDisplay extends JPanel implements StockUpdateObserver 
         else return result + "";
     }
 
+    /**
+     * This method updates the stock list and reload the panel
+     * @param stocks the new list of stocks
+     */
     @Override
     public void update(List<Stock> stocks) {
         this.stocks = stocks;

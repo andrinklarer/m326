@@ -22,23 +22,10 @@ public class Portfolio implements Serializable {
         this.sellHistory = new ArrayList<>();
     }
 
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
-    public List<Share> getShares() {
-        return shares;
-    }
-
-    public void setShares(List<Share> shares) {
-        this.shares = shares;
-    }
-
-    //Method to remove the right amount of shares from the portfolio
+    /**
+     * Method to remove the right amount of shares from the portfolio
+     * @param soldShare the share to sell
+     */
     public void removeShare(Share soldShare) {
 
         int toRemove = soldShare.getAmount();
@@ -61,7 +48,11 @@ public class Portfolio implements Serializable {
         }
     }
 
-    //Method to get the amount of shares of a certain stock
+    /**
+     * Method to get the amount of shares of a certain stock
+     * @param stock the stock to check
+     * @return amount of shares a user owns
+     */
     public int countSharesOfType(Stock stock){
         int count = 0;
         for (Share share : shares) {
@@ -73,15 +64,27 @@ public class Portfolio implements Serializable {
         return count;
     }
 
-    public List<Share> getSellHistory() {
-        return sellHistory;
-    }
-
-    public void setSellHistory(List<Share> sellHistory) {
-        this.sellHistory = sellHistory;
-    }
-
+    /**
+     * This method adds a share to current share list
+     * @param share the share to add
+     */
     public void addShares(Share share) {
         shares.add(share);
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public List<Share> getShares() {
+        return shares;
+    }
+
+    public List<Share> getSellHistory() {
+        return sellHistory;
     }
 }

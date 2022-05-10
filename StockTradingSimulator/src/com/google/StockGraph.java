@@ -31,6 +31,10 @@ public class StockGraph extends JPanel implements StockUpdateObserver {
         update(StockMarket.getStocks());
     }
 
+    /**
+     * This method will draw the panel
+     * @param g the graphics of the panel
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -40,6 +44,10 @@ public class StockGraph extends JPanel implements StockUpdateObserver {
         drawGraph(g2);
     }
 
+    /**
+     * This method updates the stock list and reload the panel
+     * @param stocks the new list of stocks
+     */
     @Override
     public void update(List<Stock> stocks) {
         if (isAllTime) {
@@ -63,6 +71,10 @@ public class StockGraph extends JPanel implements StockUpdateObserver {
         if (this.getGraphics() != null) paintComponent(this.getGraphics());
     }
 
+    /**
+     * This method will draw the hitches to the panel
+     * @param g2 the graphics of the panel
+     */
     private void drawHitches(Graphics2D g2) {
         // create x and y axes
         g2.drawLine(BORDER_GAP, getHeight() - Y_BORDER_GAP, BORDER_GAP, Y_BORDER_GAP);
@@ -92,6 +104,10 @@ public class StockGraph extends JPanel implements StockUpdateObserver {
         }
     }
 
+    /**
+     * The method will draw the graph to the panel
+     * @param g2 the graphics of the panel
+     */
     private void drawGraph(Graphics2D g2) {
         double xScale = ((double) getWidth() - 2 * BORDER_GAP) / (usedChartScores.size() - 1);
         double yScale = ((double) getHeight() - 2 * Y_BORDER_GAP) / (MAX_Y - MIN_Y);

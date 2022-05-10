@@ -25,7 +25,9 @@ public class Login extends JPanel {
         setDefaultValues();
     }
 
-    //setup login page
+    /**
+     * This method sets up the components with there default values
+     */
     private void setComponents() {
         errorMessage = new JLabel();
         errorMessage.setFocusable(false);
@@ -93,7 +95,11 @@ public class Login extends JPanel {
         });
     }
 
-    //check username and password
+    /**
+     * This method will check the entered username and password,
+     * if a user is found the user will be logged in,
+     * else an error will be displayed
+     */
     private void login(){
         String username = userNameField.getText();
         String password = String.valueOf(passwordField.getPassword());
@@ -111,6 +117,9 @@ public class Login extends JPanel {
         }
     }
 
+    /**
+     * This method will add all the components to the panel
+     */
     private void addComponents() {
         this.add(userNameField);
         this.add(passwordField);
@@ -118,6 +127,9 @@ public class Login extends JPanel {
         this.add(errorMessage);
     }
 
+    /**
+     * This method will set the default values for the panel
+     */
     private void setDefaultValues() {
         GridLayout layout = new GridLayout(4,1);
         layout.setVgap(5);

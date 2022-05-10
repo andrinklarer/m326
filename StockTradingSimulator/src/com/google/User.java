@@ -27,37 +27,43 @@ public class User implements Serializable {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public Integer getPassword() {
         return password;
-    }
-
-    public void setPassword(Integer password) {
-        this.password = password;
     }
 
     public Portfolio getPortfolio() {
         return portfolio;
     }
 
-    public void setPortfolio(Portfolio portfolio) {
-        this.portfolio = portfolio;
-    }
-
+    /**
+     * Adds the stock to the profile and removes the price of the stock from the balance
+     * @param stock the stock to add
+     * @param currentPrice the price of the bought stock
+     * @param quantity the amount of stocks
+     */
     public void buy(Stock stock, int currentPrice, int quantity) {
         portfolio.setBalance(portfolio.getBalance() - (currentPrice * quantity));
         portfolio.addShares(new Share(stock, currentPrice, LocalDateTime.now(),quantity));
 
     }
+
+    /**
+     * This method will sell the stock and add the price to the balance and adds the sold share to the sell history
+     * @param stock the sold stock
+     * @param currentPrice the price of the stock
+     * @param quantity the amount of stocks sold
+     */
     public void sell(Stock stock, int currentPrice, int quantity) {
         Share shareToSell = new Share(stock, currentPrice, LocalDateTime.now(), quantity);
         portfolio.setBalance(portfolio.getBalance() + (currentPrice * quantity));
         portfolio.removeShare(shareToSell);
         updateSellHistory(shareToSell);
     }
+
+    /**
+     * This method will add a stock to the sell history
+     * @param share the share to add
+     */
     private void updateSellHistory(Share share) {
         portfolio.getSellHistory().add(share);
     }

@@ -3,7 +3,6 @@ package com.google;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -29,6 +28,9 @@ public class UserProfileButton extends JButton {
         this.add(userBalanceLabel);
     }
 
+    /**
+     * This method will update the balance of the user
+     */
     public void updateBalance() {
         userBalanceLabel.setText("$ " + DefaultValues.DECIMAL_FORMAT.format(UserManager.currentUser.getPortfolio().getBalance()));
     }

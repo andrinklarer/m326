@@ -20,12 +20,19 @@ public class Header extends JPanel {
         setUpPanel(type);
     }
 
+    /**
+     * A set up for the title, where the title will get it's styles and so on
+     * @param title the text that will be displayed as the title
+     */
     public void setUpTitleContainer(String title) {
         titleLabel = new JLabel(title, SwingConstants.CENTER);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setFont(DefaultValues.FONT_TITLE);
     }
 
+    /**
+     * A set up for the overview button, which will reroute the user to the stock overview page
+     */
     private void setUpOverviewButton() {
         overViewButton = new JButton();
         overViewButton.setText("Overview");
@@ -34,6 +41,9 @@ public class Header extends JPanel {
         overViewButton.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
     }
 
+    /**
+     * A set up for the user profile button, which will reroute the user to the user page
+     */
     private void setUpUserProfileButton() {
         userProfileButton = new UserProfileButton();
         userProfileButton.setMaximumSize(new Dimension(40, 40));
@@ -41,11 +51,18 @@ public class Header extends JPanel {
         userProfileButton.setBackground(DefaultValues.COLOR_BACKGROUND_LIGHT);
     }
 
+    /**
+     * This method will call the user profile button update to update the users balance
+     */
     public void update(){
         userProfileButton.updateBalance();
 
     }
 
+    /**
+     * This method will add all components to the panel
+     * @param type the type of display, whereby the overview button will be displayed, type is not overview, or not
+     */
     private void setUpPanel(DisplayType type) {
         this.setBorder(new EmptyBorder(10, 10, 10, 10));
         this.setLayout(new BorderLayout());
