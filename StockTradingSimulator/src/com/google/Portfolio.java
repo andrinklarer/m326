@@ -60,7 +60,6 @@ public class Portfolio implements Serializable {
                 count += share.getAmount();
             }
         }
-        System.out.println("Number of shares of type : " + count);
         return count;
     }
 
